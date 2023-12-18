@@ -1,0 +1,48 @@
+
+body{
+    font-family: 'Poppins' ,sans-serif;
+
+}
+.user-header{
+    height: 70px;
+    box-shadow: 20px 0.5px 10px rgb(48, 47, 47);
+    display: flex;
+    background-color:white;
+  
+ 
+    flex-direction: row;
+  
+  
+ }
+ ul{
+     display: flex;
+     list-style-type: none;
+     flex-direction: row;
+     justify-content: space-between;
+     width: 100%;
+     align-items: center;
+ 
+ }
+ ul div{
+     display: flex;
+ }
+ ul div li {
+    margin-right: 25px;
+ }
+ 
+ ul div li a{
+   text-decoration:none!important;
+   color: #8B8E99;
+   font-family: 'Poppins' ,sans-serif;
+   font-weight: bold;
+ 
+   
+ }
+
+ .sec-1{
+    margin-left: 10%;
+ 
+ }
+ 
+ 
+ 
