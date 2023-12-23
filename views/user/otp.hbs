@@ -14,21 +14,28 @@
                <div id="otp" class="inputs d-flex flex-row justify-content-center mt-2">
                   <input type="text" name="otp" id="">
                </div> 
-               <div class="mt-4"> <button class="btn btn-success px-4 validate" type="submit">Validate</button> </div><br>
-               <a href="/user_otp" id="resend" class="btn btn-primary"></a>
+               <div class="mt-4"> <button class="btn btn-success px-4 validate" type="submit" id="validate">Validate</button> </div><br>
+               <a href="/user_otp" id="resend" class="btn btn-primary" ></a>
                </form>
           </div>
      </div>
 </div>
 <script>
   function count (){
-    var counter = 15; 
+    var counter = 30; 
     let cls =setInterval(function(){ 
         document.querySelector(".counter").innerHTML = counter;
+
         counter--;
+        if(counter==0){
+            document.querySelector(".counter").innerHTML = 'OTP Expired';
+        }
         if(counter===0){
           clearInterval(cls)
        document.getElementById("resend").innerHTML= 'Resend OTP'
+       document.getElementById("validate").innerHTML= ''
+       document.getElementById("resend").classList.add("btn btn-primary")
+ 
       
           
         }

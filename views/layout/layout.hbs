@@ -37,9 +37,25 @@
 <!-- body -->
 
 <body class="main-layout ">
+ 
+
+    {{#if home}}
 {{>user-header}}
+    {{/if}}
+{{#if landing}}
+{{>landing}}
+{{/if}}
 {{{body}}}
+
+
+    {{#if home}}
 {{>user-footer}}
+    {{/if}}
+{{#if landing}}
+{{>user-footer}}
+{{/if}}
+
+
     <!-- loader  -->
     
     <!-- end loader -->

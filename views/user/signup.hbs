@@ -29,6 +29,7 @@
                 <div class="col-12">
                   <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                      <br>{{#if err.email.path}} <span class="text-danger">{{err.email.msg}}</span>{{/if}}
+                     <br>{{#if emailFind}} <span class="text-danger">Email Already Exist</span>{{/if}}
                   <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
                 </div>
                 <div class="col-12">
@@ -59,7 +60,7 @@
                 <hr class="mt-5 mb-4 border-secondary-subtle">
                 <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
                   <a href="/user_login" class="link-secondary text-decoration-none">Already have an account</a>&nbsp;&nbsp;
-                  <a href="#!" class="link-secondary text-decoration-none">Forgot password</a>
+                  <a href="/user_forgotpassword" class="link-secondary text-decoration-none">Forgot password</a>
                 </div>
               </div>
             </div>
