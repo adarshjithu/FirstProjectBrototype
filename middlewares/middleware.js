@@ -198,13 +198,7 @@ const adminValidationLoginRules =[
           }
      })
 
-     .custom((value) => {
-          // Check if the password contains at least one special character
-          if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-            throw new Error('Password must contain at least one special character');
-          }
-          return true;
-        }),
+     
    
 
 ]
@@ -263,6 +257,9 @@ const resetPasswordValidationResult =(req,res,next)=>{
 
 
 }
+
+
+
 
 
 module.exports = { validationRules, validationRes ,generateOTP,validationLoginRules,loginValidationRes,createAdmin,

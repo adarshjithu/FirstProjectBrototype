@@ -10,7 +10,7 @@ adminSchema.pre('save',async function(){
     const salt = 10 ;
      this.password = await bcrypt.hash(this.password,salt);
 })
-
+  
 adminSchema.methods.isPasswordMatched= async function(enterPassword){
     return await bcrypt.compare(enterPassword,this.password);
 }

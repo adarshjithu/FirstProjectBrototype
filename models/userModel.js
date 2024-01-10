@@ -3,14 +3,14 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
     username:{type:String},
     email:{type:String},
-     password:{type:String},
+     password:{type:String}, 
     phonenumber:{type:Number},
     signupAt:{type:String,default:function(){
         return new Date().toDateString()
     }}
     ,isActive:{type:Boolean,default:true}
    
-  
+   
 })
 
 

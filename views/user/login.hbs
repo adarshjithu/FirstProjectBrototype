@@ -1,4 +1,4 @@
-<!-- Login 4 - Bootstrap Brain Component -->
+{{!-- <!-- Login 4 - Bootstrap Brain Component -->
 
 <section class="p-3 p-md-4 p-xl-5">
   <div class="container">
@@ -22,6 +22,13 @@
                    
    
                    {{/if}}
+                   {{#if logginError}}
+                    <span class="text-danger">Incorrect Username or Password</span>
+                   
+                   
+   
+                   {{/if}}
+
             <form action="/user_login" method="post">
               <div class="row gy-3 gy-md-4 overflow-hidden">
                 <div class="col-12">
@@ -63,4 +70,62 @@
       </div>
     </div>
   </div>
-</section>
+</section> --}}
+
+
+
+
+<div class="brand_color">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="titlepage">
+                        <h2>Login</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- contact -->
+    <div class="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                   {{#if isActive}}
+                    <span class="text-danger">You have been blocked by the admin</span>
+                   
+                   
+   
+                   {{/if}}
+                   {{#if logginError}}
+                    <span class="text-danger">Incorrect Username or Password</span>
+                   
+                   
+   
+                   {{/if}}
+
+                    <form class="main_form" action="/user_login" method="post">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                               <br>{{#if err.email.path}} <span class="text-danger">{{err.email.msg}}</span>{{/if}}
+                                <input class="form-control" placeholder="Enter Email" type="email" name="email">
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
+                               <br>{{#if err.password.path}} <span class="text-danger">{{err.password.msg}}</span>{{/if}}
+                                <input class="form-control" placeholder="Enter Password" type="password" name="password">
+                            </div>
+                            
+                            
+                            <div class=" col-md-12">
+                                <button class="send" type="submit">Submit</button>
+                            <a href="/user_signup">Already Have an Account</a>
+                              <a href="/user_forgotpassword" class="link-secondary text-decoration-none">Forgot Password</a><br>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 

@@ -1,0 +1,349 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Checkout example for Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/checkout/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="form-validation.css" rel="stylesheet">
+  </head>
+
+  <body class="bg-light">
+    <style>
+        .disablePayment{
+            display: none;
+        }
+    </style>
+
+    <div class="container">
+      <div class="py-5 text-center">
+        
+        <h2>CHECKOUT</h2>
+        
+
+      <div class="row">
+         {{!-- cartDetails --}}
+        <div class="col-md-4 order-md-2 mb-4">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-muted">Your cart</span>
+            <span class="badge badge-secondary badge-pill">3</span>
+          </h4>
+          <ul class="list-group mb-3">
+            {{#each cart}}
+            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <img style="width: 40px; height: 40px;" src="/assets/products/{{this.product.image}}" alt="">
+              <div>
+                <h6 class="my-0">{{this.product.name}}</h6>
+                <small class="text-muted">{{this.count}} X {{this.product.price}}</small>
+              </div>
+              <span class="text-muted">{{this.total}}</span>
+            </li>
+            {{/each}}
+
+          
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total Discount</span>
+              <span id="discount">123</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span >Sub Total</span>
+              <span id="subtotal">123</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Total Price</span>
+              <span id="total"></span>
+            </li>
+          </ul>
+
+
+
+          <form class="card p-2">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Promo code" name="promocode">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-primary">Redeem</button>
+              </div>
+            </div>
+          </form>
+        </div>
+           
+          {{!-- cartdetails --}}
+
+        <div class="col-md-8 order-md-1" style="border: 1px solid rgb(203, 193, 193);border-radius: 10px; background-color:#DEE2E5; ">
+          <h4 class="mb-3">Billing address</h4>
+
+
+
+          {{!-- checkout form --}}
+          <form class="needs-validation" novalidate method="post" action="/cart/checkout">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">First name</label> 
+                  {{!-- firstname --}}
+                <input type="text" class="form-control" id="firstName" placeholder="" value="" required name="firstname">
+                 {{!-- firstname --}}
+                <div class="invalid-feedback">
+                  Valid first name is required.
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Last name</label>
+                {{!-- lastname --}}
+                <input type="text" class="form-control" id="lastName" placeholder="" value="" required name="lastname">
+                 {{!-- lastname --}}
+                <div class="invalid-feedback">
+                  Valid last name is required.
+                </div>
+              </div>
+            </div>
+           
+
+
+
+       
+            {{!-- address --}}
+            <div class="mb-3">
+              <label for="address">Address</label>
+              <input type="text" class="form-control" id="address" placeholder="1234 Main St" required name="address">
+              <div class="invalid-feedback">
+                Please enter your shipping address.
+              </div>
+            </div>
+            {{!-- address --}}
+
+ <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="firstName">Email </label> 
+                  {{!-- firstname --}}
+                <input type="email" class="form-control" id="firstName" placeholder="" value="" required name="email">
+                 {{!-- firstname --}}
+                <div class="invalid-feedback">
+                  Valid first name is required.
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="lastName">Phone Number</label>
+                {{!-- lastname --}}
+                <input type="number" class="form-control" id="lastName" placeholder="" value="" required name="number">
+                 {{!-- lastname --}}
+                <div class="invalid-feedback">
+                  Valid last name is required.
+                </div>
+              </div>
+            </div>
+
+
+       
+      
+
+            <div class="row">
+              {{!-- country --}}
+              <div class="col-md-5 mb-3">
+                <label for="country">Country</label>
+                <select  class="custom-select d-block w-100" id="country" required name="country">
+                  <option value="">Choose...</option>
+                  <option value="us">United States</option>
+                  <option value="india">India</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please select a valid country.
+                </div>
+              </div>
+           {{!-- country --}}
+           
+           {{!-- state --}}
+              <div class="col-md-4 mb-3">
+                <label for="state">State</label>
+                <select name="state" class="custom-select d-block w-100" id="state" required>
+                  <option value="">Choose...</option>
+                  <option value="kerala">Kerala</option>
+                  <option value="tamilnadu">Tamilnadu</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+
+               {{!-- state --}}
+
+               {{!-- zip --}}
+              <div class="col-md-3 mb-3">
+                <label for="zip">Zip</label>
+                <input type="text" class="form-control" id="zip" placeholder="" required name="zipcode">
+                <div class="invalid-feedback">
+                  Zip code required.
+                </div>
+              </div>
+              
+               {{!-- zip --}}
+
+
+            </div>
+            <hr class="mb-4">
+            {{!-- address slection --}}
+    
+
+
+            <h4 class="mb-3">Payment</h4>
+
+             <div class=" my-3">
+               
+                   <input type="radio" name="payment" id="cod" onclick="changePayment()" value="cod"  >
+                   <label for="">Cash On Delivery</label>
+               
+            
+                   <input value="online" onclick="changePayment()" type="radio" style="margin-left: 20px;" name="payment" id="onlinepayment">
+                   <label for="">Online Payments</label>
+               
+            
+                   <input value="creditcard" onclick="changePayment()" type="radio" style="margin-left: 20px;" name="payment" id="creditcard">
+                   <label for="">CreditCard</label>
+               
+            
+              
+         
+           
+            
+                 
+            </div>
+
+            <div class="" id="paymentmain">
+
+          
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="cc-name">Name on card</label>
+                <input type="text"  class="form-control" id="cc-name" placeholder=""  name="cartname">
+                <small class="text-muted">Full name as displayed on card</small>
+                <div class="invalid-feedback">
+                  Name on card is required
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="cc-number">Credit card number</label>
+                <input type="number" class="form-control" id="cc-number" placeholder="" name="cartnumber">
+                <div class="invalid-feedback">
+                  Credit card number is required
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <label for="cc-expiration">Expiration</label>
+                <input type="text" name="expirydate" class="form-control" id="cc-expiration" placeholder="" >
+                <div class="invalid-feedback">
+                  Expiration date required
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="cc-expiration">CVV</label>
+                <input type="text" name="cvv" class="form-control" id="cc-cvv" placeholder="" >
+                <div class="invalid-feedback">
+                  Security code required
+                </div>
+              </div>
+            </div>
+
+              </div>
+            <hr class="mb-4">
+            <button class="btn btn-success btn-lg btn-block" type="submit"> PLACE ORDER </button>
+          </form>
+
+          {{!-- checkoutform --}}
+        </div>
+      </div>
+
+   
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>')</script>
+    <script src="../../assets/js/vendor/popper.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/vendor/holder.min.js"></script>
+    <script>
+      // Example starter JavaScript for disabling form submissions if there are invalid fields
+      (function() {
+        'use strict';
+
+        window.addEventListener('load', function() {
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+          var forms = document.getElementsByClassName('needs-validation');
+
+          // Loop over them and prevent submission
+          var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+              if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              form.classList.add('was-validated');
+            }, false);
+          });
+        }, false);
+      })();
+    </script>
+  </body>
+</html>
+
+
+<script>
+     fetch('http://localhost:3000/cart/cartcount').then((res)=>{
+            return res.json()
+         }).then((data)=>{
+            {{!-- document.getElementById("items").innerHTML = data.count ; --}}
+            document.getElementById("subtotal").innerHTML = data.subTotal
+            document.getElementById("discount").innerHTML = data.discount
+            document.getElementById("total").innerHTML = data.totalPrice
+            console.log(data)
+
+            
+         })
+ 
+
+ function changeCountry(){
+
+         console.log(document.getElementById("country").value)
+ }
+
+ function changeState(){
+     console.log(document.getElementById("state").value)
+ }
+
+
+function changePayment(){
+var cod = document.getElementById("cod").checked
+var onlinepayment = document.getElementById("onlinepayment").checked
+var creditcard = document.getElementById("creditcard").checked
+
+
+if(creditcard){
+    document.getElementById("paymentmain").classList.remove('disablePayment')
+}
+
+
+if(cod){
+    document.getElementById("paymentmain").classList.add('disablePayment')
+}
+
+}
+
+</script>

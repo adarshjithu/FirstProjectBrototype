@@ -104,14 +104,15 @@ a{
                 <hr>
                 <p>Admin Login here.. </p>
                 <label>Email</label><br>
+                {{#if error}}  <span style="color: red;">Admin Not exist</span> {{/if}}
                 {{#if err.email.path}} <span style="color: red;">{{err.email.msg}}</span>{{/if}}
-                <input type="email" name="email" placeholder="">
+                <input required type="email" name="email" placeholder="">
                 <label>Password</label><br>
                 {{#if err.password.path}} <span style="color: red;">{{err.password.msg}}</span>{{/if}}
-                <input type="password" name="password" placeholder="">
+                <input required type="password" name="password" placeholder="">
                 <button style="background-color: blue;" type="submit" >Submit</button>
                  <p>
-                    <a href="#">Forgot Password?</a>
+                    <a href="#">Forgot Password?</a> 
                 </p>
                 <button style="background-color: green;"><a style="color: white;" href="/">Back to App</a></button>
             </form>

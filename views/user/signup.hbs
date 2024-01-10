@@ -19,33 +19,33 @@
             </div>
 
 
-            <form action="/user_signup" method="post">
+            <form  id="form" action="/user_signup" method="post">
               <div class="row gy-3 gy-md-4 overflow-hidden">
                 <div class="col-12">
                   <label for="email" class="form-label">Username <span class="text-danger">*</span></label>
                   <br>{{#if err.username.path}} <span class="text-danger">{{err.username.msg}}</span>{{/if}}
-                  <input type="text" class="form-control" name="username" id="email" placeholder="name@example.com" required>
+                  <input type="text" class="form-control" name="username" id="username" placeholder="name@example.com" >
                 </div>
                 <div class="col-12">
                   <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
                      <br>{{#if err.email.path}} <span class="text-danger">{{err.email.msg}}</span>{{/if}}
                      <br>{{#if emailFind}} <span class="text-danger">Email Already Exist</span>{{/if}}
-                  <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
+                  <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" >
                 </div>
                 <div class="col-12">
                   <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
                      <br>{{#if err.password.path}} <span class="text-danger">{{err.password.msg}}</span>{{/if}}
-                  <input type="password" class="form-control" name="password" id="password" value="" required>
+                  <input type="password" class="form-control" name="password" id="password" value="" >
                 </div>
                 <div class="col-12">
                   <label for="password" class="form-label">Confirm Password <span class="text-danger">*</span></label>
                      <br>{{#if err.confirmpassword.path}} <span class="text-danger">{{err.confirmpassword.msg}}</span>{{/if}}
-                  <input type="password" class="form-control" name="confirmpassword" id="password" value="" required>
+                  <input type="password" class="form-control" name="confirmpassword" id="confirmpassword" value="" >
                 </div>
                 <div class="col-12">
                   <label for="password" class="form-label">Phone Number <span class="text-danger">*</span></label>
                      <br>{{#if err.phonenumber.path}} <span class="text-danger">{{err.phonenumber.msg}}</span>{{/if}}
-                  <input type="number" class="form-control" name="phonenumber" id="password" value="" required>
+                  <input type="number" class="form-control" name="phonenumber" id="phonenumber" value="" >
                 </div>
                 
                 <div class="col-12">
@@ -71,3 +71,21 @@
     </div>
   </div>
 </section>
+
+
+<script>
+  const form = document.getElementById("form");
+  form.addEventListener("submit",function(e){
+    const username = document.getElementById('username').value;
+    const username = document.getElementById('email').value;
+    const username = document.getElementById('password').value;
+    const username = document.getElementById('confirmpassword').value;
+    const username = document.getElementById('phonenumber').value;
+
+
+    if(username==''){
+      username.value='Required';
+      e.preventDefault()
+    }
+  })
+</script>
