@@ -76,7 +76,10 @@
               </div>
             </div>
           </form>
+
+          
         </div>
+        
            
           {{!-- cartdetails --}}
 
@@ -91,7 +94,7 @@
               <div class="col-md-6 mb-3">
                 <label for="firstName">First name</label> 
                   {{!-- firstname --}}
-                <input type="text" class="form-control" id="firstName" placeholder="" value="" required name="firstname">
+                <input type="text" class="form-control" id="firstName" placeholder="" value="{{address.firstname}}" required name="firstname">
                  {{!-- firstname --}}
                 <div class="invalid-feedback">
                   Valid first name is required.
@@ -101,7 +104,7 @@
               <div class="col-md-6 mb-3">
                 <label for="lastName">Last name</label>
                 {{!-- lastname --}}
-                <input type="text" class="form-control" id="lastName" placeholder="" value="" required name="lastname">
+                <input type="text" class="form-control" id="lastName" placeholder="" value="{{address.lastname}}" required name="lastname">
                  {{!-- lastname --}}
                 <div class="invalid-feedback">
                   Valid last name is required.
@@ -116,9 +119,9 @@
             {{!-- address --}}
             <div class="mb-3">
               <label for="address">Address</label>
-              <input type="text" class="form-control" id="address" placeholder="1234 Main St" required name="address">
+              <input value="{{address.address}}" type="text" class="form-control" id="address" placeholder="1234 Main St" required name="address">
               <div class="invalid-feedback">
-                Please enter your shipping address.
+                Please enter your address.
               </div>
             </div>
             {{!-- address --}}
@@ -127,20 +130,20 @@
               <div class="col-md-6 mb-3">
                 <label for="firstName">Email </label> 
                   {{!-- firstname --}}
-                <input type="email" class="form-control" id="firstName" placeholder="" value="" required name="email">
+                <input type="email" class="form-control" id="firstName" placeholder="" value="{{address.email}}" required name="email">
                  {{!-- firstname --}}
                 <div class="invalid-feedback">
-                  Valid first name is required.
+                  Valid Email is required.
                 </div>
               </div>
 
               <div class="col-md-6 mb-3">
                 <label for="lastName">Phone Number</label>
                 {{!-- lastname --}}
-                <input type="number" class="form-control" id="lastName" placeholder="" value="" required name="number">
+                <input type="phonenumber" class="form-control" id="lastName" placeholder="" value="{{address.phonenumber}}" required name="number">
                  {{!-- lastname --}}
                 <div class="invalid-feedback">
-                  Valid last name is required.
+                  Valid Phone Number is required.
                 </div>
               </div>
             </div>
@@ -153,8 +156,8 @@
               {{!-- country --}}
               <div class="col-md-5 mb-3">
                 <label for="country">Country</label>
-                <select  class="custom-select d-block w-100" id="country" required name="country">
-                  <option value="">Choose...</option>
+                <select   class="custom-select d-block w-100" id="country" required name="country">
+                  <option value="{{#if address.country}}{{address.country}}{{else}}''{{/if}}">{{#if address.country}}{{address.country}}{{else}}Choose...{{/if}}</option>
                   <option value="us">United States</option>
                   <option value="india">India</option>
                 </select>
@@ -168,7 +171,7 @@
               <div class="col-md-4 mb-3">
                 <label for="state">State</label>
                 <select name="state" class="custom-select d-block w-100" id="state" required>
-                  <option value="">Choose...</option>
+                  <option value="{{#if address.state}}{{address.state}}{{else}}''{{/if}}">{{#if address.state}}{{address.state}}{{else}}Choose...{{/if}}</option>
                   <option value="kerala">Kerala</option>
                   <option value="tamilnadu">Tamilnadu</option>
                 </select>
@@ -182,11 +185,28 @@
                {{!-- zip --}}
               <div class="col-md-3 mb-3">
                 <label for="zip">Zip</label>
-                <input type="text" class="form-control" id="zip" placeholder="" required name="zipcode">
+                <input type="text" class="form-control" id="zip" value="{{address.zipcode}}" placeholder="" required name="zipcode">
                 <div class="invalid-feedback">
                   Zip code required.
                 </div>
               </div>
+
+
+              <div class="col-md-4 mb-3">
+                <label for="state">Select Address Type</label>
+                <select onchange="change()"  class="custom-select d-block w-100" id="add">
+                  <option value="">Choose..</option>
+                  <option value="home" >Home</option>
+                  <option value="work" >Work</option>
+                  <option value="address-1">Address-1</option>
+                  <option value="address-2">Address-2</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+
+             
               
                {{!-- zip --}}
 
@@ -201,7 +221,7 @@
 
              <div class=" my-3">
                
-                   <input type="radio" name="payment" id="cod" onclick="changePayment()" value="cod"  >
+                   <input type="radio" name="payment" id="cod" onclick="changePayment()" value="COD"  >
                    <label for="">Cash On Delivery</label>
                
             
@@ -261,6 +281,9 @@
 
               </div>
             <hr class="mb-4">
+            <input type="number"  name="total" id="t" value="" style="display: none;">
+            <input type="number" name="subtotal" id="s" value="" style="display: none;">
+            <input type="number" name="discount" id="d" value="" style="display: none;">
             <button class="btn btn-success btn-lg btn-block" type="submit"> PLACE ORDER </button>
           </form>
 
@@ -311,8 +334,12 @@
          }).then((data)=>{
             {{!-- document.getElementById("items").innerHTML = data.count ; --}}
             document.getElementById("subtotal").innerHTML = data.subTotal
+            document.getElementById("s").value = data.subTotal
             document.getElementById("discount").innerHTML = data.discount
+            document.getElementById("d").value = data.discount
+            
             document.getElementById("total").innerHTML = data.totalPrice
+            document.getElementById('t').value = data.totalPrice
             console.log(data)
 
             
@@ -346,4 +373,17 @@ if(cod){
 
 }
 
+
+function change(e){
+ const value = document.getElementById("add").value
+  fetch(`http://localhost:3000/cart/checkout-change-address?type=${value}`).then((res)=>{
+    return res.json()
+  }).then((data)=>{
+    location.reload()
+  })
+}
+
 </script>
+
+
+

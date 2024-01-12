@@ -124,7 +124,7 @@ const profileChangeImage = asyncHandler(async(req,res)=>{
 //profile icon
 
 const profileIconControler = asyncHandler(async(req,res)=>{
-   console.log('called')
+ 
    const profile =await  AccountCollection.findOne({user:req.session.user._id})
 
    res.json({image:profile.image})

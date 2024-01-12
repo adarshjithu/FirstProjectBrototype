@@ -271,6 +271,7 @@ margin: 20px;
         {{/if}}
 
         </td>
+
       <td style="font-size: 1.3vw;">{{this.signupAt}}</td>
 
 
@@ -278,10 +279,11 @@ margin: 20px;
         {{#if this.isActive}}
         <a href="/admin/block_user/{{this._id}}" class="btn btn-danger" onclick="return confirm('Are you sure want to block the user')">Block</a>
         {{else}}
-  <a href="/admin/block_user/{{this._id}}" class="btn btn-success">UnBlock</a>
+               <a href="/admin/block_user/{{this._id}}" class="btn btn-success">UnBlock</a>
         {{/if}}
         
         </td>
+        
     </tr> 
 
     {{/each}}

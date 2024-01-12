@@ -52,6 +52,7 @@ const subImageControler = asyncHandler(async (req, res) => {
           );
      
           const array = req.files;
+          res.redirect("/admin/view-products")
      }
      catch(error){
           throw new Error(error.message)

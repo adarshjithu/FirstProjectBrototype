@@ -7,7 +7,8 @@ const userRouter = require("./routes/user")
 const adminRouter = require("./routes/admin")
 const productsRouter = require("./routes/products")
 const cartRouter = require("./routes/cart");
-const profileRouter = require("./routes/profile")
+const profileRouter = require("./routes/profile");
+const orderRoter = require('./routes/order')
 const cors = require('cors')
 app.use(cors())
 
@@ -34,7 +35,8 @@ app.use('/',userRouter)
 app.use('/admin',adminRouter);
 app.use('/products',productsRouter)
 app.use("/cart",cartRouter)
-app.use("/profile",profileRouter)
+app.use("/profile",profileRouter);
+app.use('/order',orderRoter)
 
 
 

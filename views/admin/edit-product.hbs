@@ -264,9 +264,9 @@ margin: 20px;
 
   
 
-  <header class="header">
+  <header class="header" style="background-color: #FFC221;">
     <div class="logo">
-      <a style="color: white;" href="#">Mobile Store</a>
+      <a style="color: white;" href="#"></a>
       <div class="search_box">
         {{!-- <input type="text" placeholder="Search EasyPay">
         <i class="fa-sharp fa-solid fa-magnifying-glass"></i> --}}
@@ -277,7 +277,7 @@ margin: 20px;
       <i class="fas fa-bell"></i>
       <div class="account">
         <img src="https://media.licdn.com/dms/image/D4E03AQFBeocNl5nSqg/profile-displayphoto-shrink_100_100/0/1686207530496?e=1708560000&v=beta&t=iq5b9Z1-T-mDI4oCqngKSFOImPQv0cWMXK8Ta-iQ6_A" alt="">
-        <h4 style="color: white;">{{admin}}</h4>
+        <h4 style="color: white;"></h4>
       </div>
     </div>
   </header>
@@ -287,7 +287,7 @@ margin: 20px;
 
   <div class="contain" >
        
-      <div class="side_navbar">
+      <div class="side_navbar" style="background-color: #FF8C00;">
       <span style="color: blue; margin: 25px;"  >Main Menu</span>
       
       <a  href="/admin" class="active"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 64V416H224V160H64zm384 0H288V416H448V160z"/></svg> <span>Dashboard</span></a>
@@ -355,14 +355,14 @@ margin: 20px;
   {{!-- form --}}
 
       
-    <form action="/admin/edit-product?id={{product._id}}"  method="post" id="form" >
-      <div class="form row" style="border: 1px solid rgb(140, 125, 125);">
+    <form action="/admin/edit-product?id={{products._id}}"  method="post" id="form" >
+      <div class="form row" style="">
         <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
                   <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
                      <label class="label" for="">Product Name</label>
                      <br>
                      <span class="text-danger" id="nameError"></span>
-                     <input  id="name" inp type="text" class="inp" " name="name" required value="{{product.name}}">
+                     <input  id="name" inp type="text" class="inp" " name="name" required value="{{products.name}}">
                   </div>
          
                   
@@ -371,14 +371,14 @@ margin: 20px;
                     <label for="">Price</label>
                              <br>
                      <span class="text-danger" id="priceError"></span>
-                    <input id="price" class="inp" type="number" " required name="price" value="{{product.price}}">
+                    <input id="price" class="inp" type="number" " required name="price" value="{{products.price}}">
                   </div>
 
                    <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
                      <label for="">Description</label>
                               <br>
                      <span class="text-danger" id="descriptionError"></span>
-                     <input id="description" class="inp" type="text" " required name="description" value="{{product.description}}">
+                     <input id="description" class="inp" type="text" " required name="description" value="{{products.description}}">
                    </div>
 
 
@@ -393,7 +393,7 @@ margin: 20px;
                     
                       <label for="">Quantity</label><br>
                 
-                       <input value="{{product.quantity}}" type="number" name="" required id="quantity" onchange="changequantity()" style="width: 100px; margin-top: 25px; height: 50px;">
+                       <input value="{{products.quantity}}" type="number" name="" required id="quantity" onchange="changequantity()" style="width: 100px; margin-top: 25px; height: 50px;">
                        <br><span class="text-danger" id="quantityError"></span>
                    </div>
 
@@ -406,7 +406,7 @@ margin: 20px;
                     
                       <label for="">Status</label><br>
                      <select name="" id="status" onchange="changestatus()"  style="width: 100px; margin-top: 20px; height: 50px; ">
-                      <option value="">{{product.status}}</option>
+                      <option value="">{{products.status}}</option>
                       <option value="Published">Published</option>
                       <option value="Low of stock">Low of stock</option>
                       <option value="Out of stock">Out of stock</option>
@@ -415,7 +415,7 @@ margin: 20px;
                    </div>
                    <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
                      <label for="" ">Discount</label><br>
-                      <input value="{{product.discount}}" id="discount" type="number" style="width: 100px; margin-top: 20px; height: 50px; " name="discount">
+                      <input value="{{products.discount}}" id="discount" type="number" style="width: 100px; margin-top: 20px; height: 50px; " name="discount">
                    </div>
                      </div>
        </div>
@@ -431,7 +431,7 @@ margin: 20px;
      <div class="left col-md-6 col-lg-4 col-sm-6 col-xl-4">
 
             <div class="dropdown " >
-            <button class="dropbtn" id="select-category">{{product.category}}</button>
+            <button class="dropbtn" id="select-category">{{products.category}}</button>
 
         <div class="dropdown-content">
          <span style="margin-left: 20px;cursor: pointer;" onclick="category('mobile')">Mobile</span><br><hr>
@@ -443,9 +443,9 @@ margin: 20px;
                      
         </div>
         
-           <input type="text" style="visibility: hidden;" value="" name="{{product.status}}" id="stat" >
-           <input type="number" style="visibility: hidden;" value="{{product.quantity}}" name="quantity" id="quant" >
-           <input type="text" style="visibility: hidden;" value="{{product.category}}" name="category" id="category">
+           <input type="text" style="visibility: hidden;" value="" name="{{products.status}}" id="stat" >
+           <input type="number" style="visibility: hidden;" value="{{products.quantity}}" name="quantity" id="quant" >
+           <input type="text" style="visibility: hidden;" value="{{products.category}}" name="category" id="category">
 
 
       </div>
@@ -458,11 +458,13 @@ margin: 20px;
 
 
    {{!-- form --}}
+        <div style="display: flex; justify-content: space-between;">
 
-      <form  action="/admin/change-image?id={{product._id}}" enctype="multipart/form-data" method="post"  style="border: 1px solid black; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;" >
+
+      <form  action="/admin/change-image?id={{products._id}}" enctype="multipart/form-data" method="post"  style="border: 1px solid grey; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px;" >
           <span>Main Image</span>
 
-           <img  id="img" style="width: 200px; height: 200px; margin-top: 30px; " src="/assets/products/{{product.image}}" alt="" >
+           <img  id="img" style="width: 100px; height: 100px; margin-top: 30px; " src="/assets/products/{{products.image}}" alt="" >
            
            <input value="" style="" type="file" id="image" name="image" onchange="viewImage(event)" >
            <button class="btn btn-primary" type="submit">Submit</button>
@@ -470,15 +472,17 @@ margin: 20px;
 
            {{!-- subimages --}}
 
-      <form  action="/products/subimage?id={{product._id}}" enctype="multipart/form-data" method="post"  style="border: 1px solid black; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;" >
+
+      <form  action="/products/subimage?id={{products._id}}" enctype="multipart/form-data" method="post"  style="border: 1px solid black; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;border-radius: 10px;" >
           <span>Sub Image</span>
 
-           <img  id="img" style="width: 200px; height: 200px; margin-top: 30px; " src="/assets/products/{{product.image}}" alt="" >
+           <img  id="img" style="width: 100px; height: 100px; margin-top: 30px; " src="/assets/products/{{products.image}}" alt="" >
            
            <input value="" style="" type="file" id="image" name="image" onchange="viewImage(event)" multiple>
            <button class="btn btn-primary" type="submit">Submit</button>
            </form>
            
+        </div>
 
 
 

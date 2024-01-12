@@ -224,11 +224,11 @@ const adminViewProductCategoryVise = async(req,res)=>{
 
 //edit product
 const adminEditProduct =asyncHandler(async (req,res)=>{
-  const product = await productCollection.findById({_id:req.query.id}).lean()
+  const products = await productCollection.findById({_id:req.query.id}).lean()
  
 
 
-   res.render("admin/edit-product",{product})
+   res.render("admin/edit-product",{products})
 })
 
 //edit product post 

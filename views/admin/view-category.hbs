@@ -177,10 +177,11 @@ margin: 20px;
   width: 20%;
 }
 
-.ul li a:hover{
+.ul li a span:hover{
   cursor: pointer;
   background-color: #DBDBDB;
   color: blue;
+  color: white;
  
 
 }
@@ -219,9 +220,9 @@ margin: 20px;
 
   
 
-  <header class="header">
+  <header class="header" style="background-color:#FFC221;">
     <div class="logo">
-      <a style="color: white;" href="#">Mobile Store</a>
+      <a style="color: white;" href="#"> </a>
       <div class="search_box">
         {{!-- <input type="text" placeholder="Search EasyPay">
         <i class="fa-sharp fa-solid fa-magnifying-glass"></i> --}}
@@ -238,9 +239,9 @@ margin: 20px;
   </header>
 
 
-  <div class="contain" >
+  <div class="contain"  >
        
-      <div class="side_navbar">
+      <div class="side_navbar" style="background-color:#FF8C00;">
       <span style="color: blue; margin: 25px;"  >Main Menu</span>
       
       <a  href="/admin" class="active"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zm64 64V416H224V160H64zm384 0H288V416H448V160z"/></svg> <span>Dashboard</span></a>
@@ -311,7 +312,7 @@ margin: 20px;
    
       
       <th style="font-size:1vw;" scope="col">Category Name</th>
-      <th style="font-size:1vw;" scope="col">Stock</th>
+      <th style="font-size:1vw;" scope="col">Description</th>
       <th style="font-size:1vw;" scope="col">Added</th>
       <th  style="font-size:1vw; " scope="col">Action</th>
  
@@ -329,7 +330,7 @@ margin: 20px;
       
       <td style="font-size: 1.1vw;"><img style="width: 35px; height: 35px; margin: 0px 20px 0px 20px;" src="/assets/products/{{this.image}}" alt="">{{this.category}}</td>
      
-      <td style="font-size: 1.1vw;">{{this.stock}}</td>
+      <td style="font-size: 1.1vw;">{{this.description}}</td>
       <td style="font-size: 1.1vw;">{{this.added}}</td>
      
      
