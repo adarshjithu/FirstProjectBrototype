@@ -8,26 +8,56 @@
 .icon-hover:hover i {
   color: #3b71ca !important;
 }
+* {box-sizing: border-box;}
+
+.img-zoom-container {
+  position: relative;
+}
+
+.img-zoom-lens {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  /*set the size of the lens:*/
+  width: 40px;
+  height: 40px;
+}
+
+.img-zoom-result {
+  border: 1px solid #d4d4d4;
+  /*set the size of the result div:*/
+  width: 300px;
+  height: 300px;
+}
     </style>
 
-
+     <section class="inner_page_head" style="background-color:#002C3E;">
+         <div class="container_fuild">
+            <div class="row">
+               <div class="col-md-12">
+                  <div class="full">
+                     <h3 style="color: white;">Product Detail</h3>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
 <!-- content -->
-<section class="py-5" style="background-color: #F8F9FA;">
+<section class="py-5" style="background-color:white;">
   <div class="container">
     <div class="row gx-5">
       <aside class="col-lg-6">
 
         {{!-- image --}}
-        <div class="border rounded-4 mb-3 d-flex justify-content-center">
+        <div class="border rounded-4 mb-3 d-flex justify-content-center" style="border: red;">
           <div style="height: 350px; display: flex; justify-content: center; align-items: center;">
 
-          <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp">
-            <img id="mainImage" style="max-width: 100%; max-height: 300px;  margin: auto;" class="rounded-4 fit" src="/assets/products/{{product.image}}" />
-          </a>
+       
+            <img onmouseover="over()" onmouseout="out()" id="myimage" style="max-width: 100%; max-height: 300px;  margin: auto;" class="rounded-4 fit main-image" src="/assets/products/{{product.image}}" />
+          
           </div>
         </div>
           {{!-- image --}}
-        <div class=" mb-3" style="display: flex;justify-content: space-around; max-width: 500px;" >
+        <div  class=" mb-3" style="display: flex;justify-content: space-around; max-width: 500px;" >
               <a onmouseenter="changeImage(`{{product.image}}`)"  id="subImage" data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"  class="item-thumb">
             <img id="img" width="60" height="60" class="rounded-2" src="/assets/products/{{product.image}}" />
           </a>
@@ -56,11 +86,12 @@
         <!-- thumbs-wrap.// -->
         <!-- gallery-wrap .end// -->
       </aside>
-      <main class="col-lg-6">
-        <div class="ps-lg-3">
-          <h4 class="title text-dark">
+      <main class="col-lg-6 main-pro" id="myresult" >
+    
+        <div class="ps-lg-3" >
+          <h3 class="title text-dark" style="color: black;">
            {{product.name}}
-          </h4>
+          </h3>
           <div class="d-flex flex-row my-3">
             <div class="text-warning mb-1 me-2">
               <i class="fa fa-star"></i>
@@ -72,12 +103,17 @@
                 4.5
               </span>
             </div>
-            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
-            <span class="text-success ms-2">{{product.status}}</span>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <span class="text-success ms-2">{{product.status}}</span><br>
+            
           </div>
+            <span></span>
 
           <div class="mb-3">
-            <span class="h5"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>{{product.price}}</span>
+            <span class="h5"><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>&nbsp;&nbsp;{{product.price}}</span>
            
           </div>
 
@@ -90,18 +126,18 @@
           <hr />
 
           <div class="row mb-4">
-            <div class="col-md-4 col-6">
+            {{!-- <div class="col-md-4 col-6">
               <label class="mb-2">Size</label>
               <select class="form-select border border-secondary" style="height: 35px;">
                 <option>Small</option>
                 <option>Medium</option>
                 <option>Large</option>
               </select>
-            </div>
+            </div> --}}
             <!-- col.// -->
             <div class="col-md-4 col-6 mb-3">
-              <label class="mb-2 d-block">Quantity</label>
-              <div class="input-group mb-3" style="width: 170px;">
+              {{!-- <label class="mb-2 d-block">Quantity :{{product.Quantity}}</label> --}}
+              {{!-- <div class="input-group mb-3" style="width: 170px;">
                 <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1" data-mdb-ripple-color="dark">
                   <i class="fas fa-minus"></i>
                 </button>
@@ -109,16 +145,18 @@
                 <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon2" data-mdb-ripple-color="dark">
                   <i class="fas fa-plus"></i>
                 </button>
-              </div>
+              </div> --}}
             </div>
           </div>
+       
+
+          <a class="btn btn-success"  href="/cart/buy-now?proId={{product._id}}"  style="margin-right: 100px;color: white;border: none;"> Buy now </a>
+          <a onclick="addtocart('{{product._id}}')" class="btn btn-primary " style="color: white;background-color: red;border: none;"><svg xmlns="http://www.w3.org/2000/svg" height="14" width="15.75" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#eceff3" d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/></svg> &nbsp;&nbsp;Add to cart </a>
           
-          <a href="/cart/view-cart" class="btn btn-warning shadow-0" onclick="addtocart('{{product._id}}')"> Buy now </a>
 
 
 
-          <a onclick="addtocart('{{product._id}}')" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Add to cart </a>
-          <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i class="me-1 fa fa-heart fa-lg"></i> Save </a>
+
         </div>
       </main>
     </div>
@@ -129,124 +167,8 @@
 <section class="bg-light border-top py-4">
   <div class="container">
     <div class="row gx-4">
-      <div class="col-lg-8 mb-4">
-        <div class="border rounded-2 px-3 py-2 bg-white">
-          <!-- Pills navs -->
-          <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
-            <li class="nav-item d-flex" role="presentation">
-              <a class="nav-link d-flex align-items-center justify-content-center w-100 active" id="ex1-tab-1" data-mdb-toggle="pill" href="#ex1-pills-1" role="tab" aria-controls="ex1-pills-1" aria-selected="true">Specification</a>
-            </li>
-            <li class="nav-item d-flex" role="presentation">
-              <a class="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-2" data-mdb-toggle="pill" href="#ex1-pills-2" role="tab" aria-controls="ex1-pills-2" aria-selected="false">Warranty info</a>
-            </li>
-            <li class="nav-item d-flex" role="presentation">
-              <a class="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-3" data-mdb-toggle="pill" href="#ex1-pills-3" role="tab" aria-controls="ex1-pills-3" aria-selected="false">Shipping info</a>
-            </li>
-            <li class="nav-item d-flex" role="presentation">
-              <a class="nav-link d-flex align-items-center justify-content-center w-100" id="ex1-tab-4" data-mdb-toggle="pill" href="#ex1-pills-4" role="tab" aria-controls="ex1-pills-4" aria-selected="false">Seller profile</a>
-            </li>
-          </ul>
-          <!-- Pills navs -->
-
-          <!-- Pills content -->
-          <div class="tab-content" id="ex1-content">
-            <div class="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
-              <p>
-                With supporting text below as a natural lead-in to additional content. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                pariatur.
-              </p>
-              <div class="row mb-2">
-                <div class="col-12 col-md-6">
-                  <ul class="list-unstyled mb-0">
-                    <li><i class="fas fa-check text-success me-2"></i>Some great feature name here</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Lorem ipsum dolor sit amet, consectetur</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Duis aute irure dolor in reprehenderit</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Optical heart sensor</li>
-                  </ul>
-                </div>
-                <div class="col-12 col-md-6 mb-0">
-                  <ul class="list-unstyled">
-                    <li><i class="fas fa-check text-success me-2"></i>Easy fast and ver good</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Some great feature name here</li>
-                    <li><i class="fas fa-check text-success me-2"></i>Modern style and design</li>
-                  </ul>
-                </div>
-              </div>
-              <table class="table border mt-3 mb-2">
-                <tr>
-                  <th class="py-2">Display:</th>
-                  <td class="py-2">13.3-inch LED-backlit display with IPS</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Processor capacity:</th>
-                  <td class="py-2">2.3GHz dual-core Intel Core i5</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Camera quality:</th>
-                  <td class="py-2">720p FaceTime HD camera</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Memory</th>
-                  <td class="py-2">8 GB RAM or 16 GB RAM</td>
-                </tr>
-                <tr>
-                  <th class="py-2">Graphics</th>
-                  <td class="py-2">Intel Iris Plus Graphics 640</td>
-                </tr>
-              </table>
-            </div>
-            <div class="tab-pane fade mb-2" id="ex1-pills-2" role="tabpanel" aria-labelledby="ex1-tab-2">
-              Tab content or sample information now <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-              nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-            </div>
-            <div class="tab-pane fade mb-2" id="ex1-pills-3" role="tabpanel" aria-labelledby="ex1-tab-3">
-              Another tab content or sample information now <br />
-              Dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-              commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-              mollit anim id est laborum.
-            </div>
-            <div class="tab-pane fade mb-2" id="ex1-pills-4" role="tabpanel" aria-labelledby="ex1-tab-4">
-              Some other tab content or sample information now <br />
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum.
-            </div>
-          </div>
-          <!-- Pills content -->
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="px-0 border rounded-2 shadow-0">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Similar items</h5>
-              {{#each products}}
-              <div class="d-flex mb-3">
-                <a href="/user-product-details?id={{this._id}}" class="me-3">
-                  <img src="/assets/products/{{this.image}}" />
-                </a>
-                <div class="info">
-                  <a href="#" class="nav-link mb-1">
-                   {{this.name}}
-                  </a>
-                  <strong class="text-dark"> {{this.price}}</strong>
-                </div>
-              </div>
-              {{/each}}
-
-              
-
-              
-
-              
-              </div>
-            </div>
-          </div>
-        </div>
+      
+      
       </div>
     </div>
   </div>
@@ -255,9 +177,10 @@
 
 <!-- Footer -->
 
+  <div  class="img-zoom-result"></div>
 <script>
   function changeImage(url){
-    document.getElementById('mainImage').src=`/assets/products/${url}`
+    document.querySelector('.main-image').src=`/assets/products/${url}`
         console.log(url)
   }
 
@@ -266,10 +189,84 @@
     console.log(proId)
     fetch(`http://localhost:3000/cart/addtocart?proId=${proId}`).then(function(res){
      return res.json()
+     
   }).then((data)=>{
+    document.querySelector(".badge").innerHTML=data.count;
       
   }) 
     
 
   }
 </script>
+
+<script>
+  function imageZoom(imgID, resultID) {
+  var img, lens, result, cx, cy;
+  img = document.getElementById(imgID);
+  result = document.getElementById(resultID);
+  /* Create lens: */
+  lens = document.createElement("DIV");
+  lens.setAttribute("class", "img-zoom-lens");
+  /* Insert lens: */
+  img.parentElement.insertBefore(lens, img);
+  /* Calculate the ratio between result DIV and lens: */
+  cx = result.offsetWidth / lens.offsetWidth;
+  cy = result.offsetHeight / lens.offsetHeight;
+  /* Set background properties for the result DIV */
+  result.style.backgroundImage = "url('" + img.src + "')";
+  result.style.backgroundSize = (img.width * cx) + "px " + (img.height * cy) + "px";
+  /* Execute a function when someone moves the cursor over the image, or the lens: */
+  lens.addEventListener("mousemove", moveLens);
+  img.addEventListener("mousemove", moveLens);
+  /* And also for touch screens: */
+  lens.addEventListener("touchmove", moveLens);
+  img.addEventListener("touchmove", moveLens);
+  function moveLens(e) {
+    var pos, x, y;
+    /* Prevent any other actions that may occur when moving over the image */
+    e.preventDefault();
+    /* Get the cursor's x and y positions: */
+    pos = getCursorPos(e);
+    /* Calculate the position of the lens: */
+    x = pos.x - (lens.offsetWidth / 2);
+    y = pos.y - (lens.offsetHeight / 2);
+    /* Prevent the lens from being positioned outside the image: */
+    if (x > img.width - lens.offsetWidth) {x = img.width - lens.offsetWidth;}
+    if (x < 0) {x = 0;}
+    if (y > img.height - lens.offsetHeight) {y = img.height - lens.offsetHeight;}
+    if (y < 0) {y = 0;}
+    /* Set the position of the lens: */
+    lens.style.left = x + "px";
+    lens.style.top = y + "px";
+    /* Display what the lens "sees": */
+    result.style.backgroundPosition = "-" + (x * cx) + "px -" + (y * cy) + "px";
+  }
+  function getCursorPos(e) {
+    var a, x = 0, y = 0;
+    e = e || window.event;
+    /* Get the x and y positions of the image: */
+    a = img.getBoundingClientRect();
+    /* Calculate the cursor's x and y coordinates, relative to the image: */
+    x = e.pageX - a.left;
+    y = e.pageY - a.top;
+    /* Consider any page scrolling: */
+    x = x - window.pageXOffset;
+    y = y - window.pageYOffset;
+    return {x : x, y : y};
+  }
+}
+</script>
+<script>
+imageZoom("myimage", "myresult");
+</script>
+<script>
+  function over(){
+    console.log('over')
+  }
+  function out(){
+
+  }
+ 
+</script>
+
+

@@ -8,7 +8,8 @@ const adminRouter = require("./routes/admin")
 const productsRouter = require("./routes/products")
 const cartRouter = require("./routes/cart");
 const profileRouter = require("./routes/profile");
-const orderRoter = require('./routes/order')
+const orderRoter = require('./routes/order');
+const couponRouter = require("./routes/coupon")
 const cors = require('cors')
 app.use(cors())
 
@@ -22,9 +23,28 @@ const dotenv = require('dotenv').config()
 app.use(express.json())
 
 
-
 var hbs = require("express-handlebars").engine   
-connection()
+connection();
+
+
+
+
+// app.all('*',(req,res,next)=>{
+//     const err = new Error('cant find');
+//     err.status='fail';
+//     err.statusCode = 404;
+//     next(err)
+    
+// })f
+// app.use((err,req,res,next)=>{
+
+//     err.statusCode = err.statusCode || 500;
+//     err.status = err.status || 'error';
+//     res.status(err.statusCode).send('something went wrong')
+
+
+
+// }) 
 app.use(nocache())
 app.use(session({secret:"Secretkey",cookie:{maxAge:6000000}}))
 app.use(bodyParser.urlencoded({extended:true}))
@@ -36,13 +56,29 @@ app.use('/admin',adminRouter);
 app.use('/products',productsRouter)
 app.use("/cart",cartRouter)
 app.use("/profile",profileRouter);
-app.use('/order',orderRoter)
+app.use('/order',orderRoter);   
+app.use('/coupon',couponRouter)
+app.use(bodyParser.urlencoded({extended:true}))
+app.use(bodyParser.json());
+app.use(express.json())
 
+app.all('*',(req,res)=>{
+    res.render("error/404")
+})
 
+app.use((error,req,res,next)=>{
+    console.log(error)
+    if(error.statusCode==400){
+        res.send("400")
+    }
+    else{res.render("error/500")
+    }
+})
+     
 
 
  
-app.listen(3000,console.log('server started at port 3000'))
+app.listen(process.env.PORT,console.log('server started at port 3000'))
 
 
  

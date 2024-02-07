@@ -176,8 +176,35 @@
   .address span{
     color: black;
   }
+  .track{
+    width: 25%;
+
+  }
+  .main{
+    display: flex;
+  }
+  .tick{
+    width: 10%;
+    border-radius: 50%;
+    background-color: #F7BE16;
+  }
+  .line{
+    width: 90%;
+
+  }
+  .l{
+    height: 5px;
+    width: 100%;
+    background-color:#F7BE16;
+  }
+  .track{
+   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
    @media only screen and  (max-width:750px){
-    ul li a span{
+   . a h6{
         display:none;
     }
     ul li a{
@@ -186,6 +213,12 @@
         justify-content: center;
     }
     
+   }
+   .track .tick{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
    }
 </style>
 
@@ -247,44 +280,134 @@
                              
                 {{!-- tracking                     --}}
  
-						<div class="" style="width: 100%;">
-							<div class="" style="width: 100%;display: flex;">
-								<div class="order-tracking completed">
-									<span class="is-complete"></span>
-									<p>Ordered<br><span>{{orderData.orderedAt}}</span></p>
-								</div>
-								<div class="order-tracking completed">
-									<span class="is-complete"></span>
-									<p>Shipped<br><span>{{orderData.orderedAt}}</span></p>
-								</div>
-								<div class="order-tracking completed">
-									<span class="is-complete"></span>
-									<p>Out For Delivery<br><span>{{orderData.orderedAt}}</span></p>
-								</div>
-								<div class="order-tracking">
-									<span class="is-complete"></span>
-									<p>Delivered<br><span>{{orderData.orderedAt}}</span></p>
-								</div>
-							</div>
-						</div>
+						  <div  style="width: 100%;height: 50%;display: flex;flex-direction: column;" >
+
+                        
+
+                        <div class="main" style="width: 90%;">
+                            
+
+                           <div class="track">
+                              <div class="tick tick1"> &nbsp;</div>
+                              <div class="line "> 
+                                  <div class="l line1">
+
+                                  </div>
+                              </div>
+                           </div>
+
+
+                           <div class="track">
+                            <div class="tick tick2"> &nbsp;</div>
+                              <div class="line"> 
+                                  <div class="l line2">
+
+                                  </div>
+                              </div>
+                           </div>
+
+
+                           <div class="track">
+                            
+                            <div class="tick tick3"> &nbsp;</div>
+                              <div class="line"> 
+                                  <div class="l line3">
+
+                                  </div>
+                              </div>
+                           </div>
+
+
+                           <div class="track" style="display: flex;justify-content: flex-start;">
+                            <div class=" tick tick4"> &nbsp;</div>
+              
+                           </div>
+                        
+                        </div>
+
+                        {{!-- ////////////////////////////// --}}
+                        <div class="main" style="width: 90%;">
+
+                            <span id="status" style="display: none;">{{orderData.status}}</span>
+                            
+
+                           <div class="track">
+                          Order Placed
+                           </div>
+
+
+                           <div class="track">
+                            Shipped
+                           </div>
+
+
+                           <div class="track">
+                            
+                              Out For Delivery
+                           </div>
+
+                           <div class="track cancel">
+                            
+                             Delivered
+                           </div>
+
+
+                           <div class="track" style="display: flex;justify-content: flex-start;">
+                            
+              
+                           </div>
+                        
+                        </div>
+                        {{!-- //////////////////// --}}
+
+                           
+
+
+                        </div>
 
 
 {{!-- tracking --}}
                        <div class="cancel">
                         <div class="dropdown">
                             <a href="/order/admin-view-orders" style="color: white;" class="btn btn-success">Go Back</a><br>
-                            <button></button>
-                          
-                            
-  <button id="changeStatus" class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-     {{orderData.status}}
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#" onclick="changeStatus('In Progress','{{orderData._id}}')">In Progress</a>
+                           
+      <style>
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+</style>
+
+<div class="dropdown">
+
+  <div class="dropdown-content">
+   <a class="dropdown-item" href="#" onclick="changeStatus('Shipped','{{orderData._id}}')">Shipped</a>
     <a class="dropdown-item" href="#" onclick="changeStatus('Delivered','{{orderData._id}}')">Delivered</a>
     <a class="dropdown-item" href="#" onclick="changeStatus('Cancelled','{{orderData._id}}')">Cancelled</a>
     <a class="dropdown-item" href="#" onclick="changeStatus('Placed','{{orderData._id}}')">Placed</a>
+    <a class="dropdown-item" href="#" onclick="changeStatus('Out For Delivery','{{orderData._id}}')">Out For Delivery</a>
+    <a class="dropdown-item" href="#" onclick="changeStatus('Returned','{{orderData._id}}')">Returned</a>
   </div>
+</div>                      
+  <button id="changeStatus" class="btn  dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="border: 1px solid red;background-color: red;color: white;font-weight: 700;">
+     {{orderData.status}}
+     <input  style="display: none;border: 1px solid red;" type="text" name="" id="s" value="{{orderData.status}}" >
+  </button>
+  
 </div>
                        </div>
                                
@@ -297,11 +420,11 @@
                         <div class="row">
                             <div class="col-lg-8">
                                 <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="header-title mb-3">Items from Order {{orderData._id}}</h4>
+                                    <div class="card-body"style="box-shadow: 1px 1px 10px grey;" >
+                                        <h6 class="header-title mb-3">Items from Order {{orderData._id}}</h6>
             
                                         <div class="table-responsive">
-                                            <table class="table mb-0">
+                                            <table class="table mb-0" style="box-shadow: 1px 1px 10px grey;">
                                                 <thead class="table-light">
                                                 <tr>
                                                     <th>Item</th>
@@ -329,12 +452,12 @@
                                 </div>
                             </div> <!-- end col -->
         
-                            <div class="col-lg-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="header-title mb-3">Order Summary</h4>
+                            <div class="col-lg-4" >
+                                <div class="card" style="box-shadow: 1px 1px 10px grey;">
+                                    <div class="card-body" style="box-shadow: 1px 1px 10px grey;">
+                                        <h4 class="header-title mb-3">ORDER SUMMERY</h4>
             
-                                        <div class="table-responsive">
+                                        <div class="table-responsive" >
                                             <table class="table mb-0">
                                                 <thead class="table-light">
                                                 <tr>
@@ -374,8 +497,8 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="card">
-                                    <div class="card-body">
-                                        <h4 class="header-title mb-3">Shipping Information</h4>
+                                    <div class="card-body"style="box-shadow: 1px 1px 10px grey;">
+                                        <h5 class="header-title mb-3">SHIPPING INFORMATION</h5>
 
                                         <h5>{{orderData.address.firstname}}</h5>
                                         
@@ -390,10 +513,10 @@
                                 </div>
                             </div> <!-- end col -->
         
-                            <div class="col-lg-4">
+                            <div class="col-lg-4" style="box-shadow: 1px 1px 10px grey;">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="header-title mb-3">Billing Information</h4>
+                                        <h5 class="header-title mb-3">BILLING INFORMATION</h5>
 
                                         <ul class="list-unstyled mb-0">
                                             <li>
@@ -408,9 +531,9 @@
                             </div> <!-- end col -->
         
                             <div class="col-lg-4">
-                                <div class="card">
+                                <div class="card" style="box-shadow: 1px 1px 10px grey;margin-top: 10px;">
                                     <div class="card-body">
-                                        <h4 class="header-title mb-3">Delivery Info</h4>
+                                        <h5 class="header-title mb-3">DELIVERY INFO</h5>
             
                                         <div class="text-center">
                                             <i class="mdi mdi-truck-fast h2 text-muted"></i>
@@ -479,10 +602,117 @@
 
     console.log(orderId)
   fetch(`http://localhost:3000/order/change-order-status?id=${orderId}&&status=${arg}`)
+  location.reload()
   }
 
 
 
 
  
+</script>
+
+<script>
+    let status = document.getElementById("s").value
+       if(status=='Placed'){
+
+            document.querySelector(".tick1").style.backgroundColor='green'
+           
+            
+            document.querySelector('.tick1').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+                
+         }
+
+         if(status=='Shipped'){
+           
+            document.querySelector(".tick1").style.backgroundColor='green'
+            document.querySelector(".line1").style.backgroundColor='green'
+            
+            document.querySelector('.tick1').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+            
+ 
+            document.querySelector(".tick2").style.backgroundColor='green'
+        
+            
+            document.querySelector('.tick2').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+   
+ 
+         }
+         if(status=='Out For Delivery'){
+           
+            document.querySelector(".tick1").style.backgroundColor='green'
+            document.querySelector(".line1").style.backgroundColor='green'
+            
+            document.querySelector('.tick1').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+            
+ 
+            document.querySelector(".tick2").style.backgroundColor='green'
+          document.querySelector(".line2").style.backgroundColor='green'
+            
+            document.querySelector('.tick2').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+              document.querySelector(".tick3").style.backgroundColor='green'
+              document.querySelector('.tick3').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+ 
+         }
+         if(status=='Delivered'){
+           
+            document.querySelector(".tick1").style.backgroundColor='green'
+            document.querySelector(".line1").style.backgroundColor='green'
+            
+            document.querySelector('.tick1').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+            
+ 
+            document.querySelector(".tick2").style.backgroundColor='green'
+          document.querySelector(".line2").style.backgroundColor='green'
+            
+            document.querySelector('.tick2').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+              document.querySelector(".tick3").style.backgroundColor='green'
+              document.querySelector('.tick3').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+                   document.querySelector(".line3").style.backgroundColor='green'
+                         document.querySelector(".tick4").style.backgroundColor='green' 
+                      document.querySelector('.tick4').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+         }
+         if(status=='Cancelled'){
+            
+            document.querySelector(".tick1").style.backgroundColor='green'
+            document.querySelector(".line1").style.backgroundColor='green'
+            
+            document.querySelector('.tick1').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+            
+ 
+            document.querySelector(".tick2").style.backgroundColor='green'
+          document.querySelector(".line2").style.backgroundColor='green'
+            
+            document.querySelector('.tick2').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+              document.querySelector(".tick3").style.backgroundColor='green'
+              document.querySelector('.tick3').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+                   document.querySelector(".line3").style.backgroundColor='green'
+                         document.querySelector(".tick4").style.backgroundColor='green' 
+                      document.querySelector('.tick4').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+            document.querySelector(".cancel").innerHTML='Cancelled'
+             document.querySelector(".tick4").style.backgroundColor='red' 
+                      document.querySelector('.tick4').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>' 
+         }
+         if(status=='Returned'){
+
+            
+            document.querySelector(".tick1").style.backgroundColor='green'
+            document.querySelector(".line1").style.backgroundColor='green'
+            
+            document.querySelector('.tick1').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+            
+ 
+            document.querySelector(".tick2").style.backgroundColor='green'
+          document.querySelector(".line2").style.backgroundColor='green'
+            
+            document.querySelector('.tick2').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+              document.querySelector(".tick3").style.backgroundColor='green'
+              document.querySelector('.tick3').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+                   document.querySelector(".line3").style.backgroundColor='green'
+                         document.querySelector(".tick4").style.backgroundColor='green' 
+                      document.querySelector('.tick4').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>'
+              document.querySelector(".cancel").innerHTML='Returned'
+                 document.querySelector(".tick4").style.backgroundColor='orange' 
+                   document.querySelector('.tick4').innerHTML='<svg xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f2f2f3" d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>' 
+         }
+     
 </script>

@@ -2,10 +2,10 @@ const { otpAuthMiddleware, generateOTP } = require("../middlewares/middleware");
 const asyncHandler = require("express-async-handler");
 const UserCollection = require("../models/userModel");
 const categoryCollection = require("../models/categoryModel");
-const productCollection = require("../models/productModel")
+const productCollection = require("../models/productModel");
 const { body } = require("express-validator");
-const bcrypt = require('bcrypt')
-const cartCollection = require("../models/cartModel")
+const bcrypt = require("bcrypt");
+const cartCollection = require("../models/cartModel");
 
 //landin controler
 const landingControler = (req, res) => {
@@ -14,82 +14,134 @@ const landingControler = (req, res) => {
 
 //signupControler
 
-const signupControler = (req, res) => {
-     if (req.session.user) {
-          res.redirect("/user_home");
-     } else {
-          res.render("user/signup", { home: true });
-     }
-};
-//loginControler
-const loginControler = (req, res) => {
-     if (req.session.user) {
-          res.redirect("/user_home");
-     } else {
-          res.render("user/login", { home: true });
-     }
-};
+const signupControler = asyncHandler( (req, res) => {
+     try{
 
-//loginpost controler
-
-const loginPostControler = async (req, res) => {
-     const user = await UserCollection.findOne({ email: req.body.email });
-
-     if (user && (await user.isPasswordMatched(req.body.password))) {
-          if (user.isActive == true) {
-               req.session.user = user;
-
+          if (req.session.user) {
                res.redirect("/user_home");
           } else {
-               res.render("user/login", { isActive: true });
+               res.render("user/signup");
           }
-     } else {
-          res.render("user/login",{logginError:true});
      }
-};
+     catch(error){
+          console.log(error.message);
+          res.status(500);
+          var err = new Error();
+          error.statusCode = 500;
+          error.message = 'Error While Signup'
+          next(err)
+
+}
+})
+//loginControler
+const loginControler = asyncHandler(async (req, res, next) => {
+     try{
+
+          if (req.session.user) {
+               res.redirect("/user_home");
+          } else {
+               res.render("user/login");
+          }
+     }
+     catch(error){
+          console.log(error.message);
+          res.status(500);
+          var err = new Error();
+          error.statusCode = 500;
+       
+          next(err) 
+     }
+}
+)
+//loginpost controler
+
+const loginPostControler = asyncHandler(async (req, res) => {
+     try{
+
+          
+          const user = await UserCollection.findOne({ email: req.body.email });
+          
+          if (user && (await user.isPasswordMatched(req.body.password))) {
+               if (user.isActive == true) {
+                    req.session.user = user;
+                    
+                    res.redirect("/user_home");
+               } else {
+                    res.render("user/login", { isActive: true });
+               }
+          } else {
+               res.render("user/login", { logginError: true });
+          }
+     }
+     catch(error){
+     }
+})
 
 //homeControler
-const homeControler =asyncHandler(async (req, res) => {
+const homeControler = asyncHandler(async (req, res, next) => {
 
-   
-     const category = await categoryCollection.find({}).lean()
-     products = await productCollection.find({}).lean().limit(8)
-     let cartCount = await cartCollection.findOne({user:req.session.user._id})
-     var count;
-     if(cartCount){
-           count=cartCount.products.length
-     }
-     else{
-          count=null
-     }
+     try{
 
+          const category = await categoryCollection.find({}).lean();
+          products = await productCollection.find({}).lean().limit(8);
+          let cartCount = await cartCollection.findOne({ user: req.session.user._id });
+          var count;
+          if (cartCount) {
+               count = cartCount.products.length;
+          } else {
+               count = null;
+          }
      
-    
-
-     var USER;
-     if (req.session.user) {
-          USER = req.session.user.username;
-     } else {
-          USER = "";
+          var USER;
+          if (req.session.user) {
+               USER = req.session.user.username;
+          } else {
+               USER = "";
+          }
+     
+          res.render("user/home", { home: true, user: USER, category, products, count: count });
      }
+     catch(error){
+          console.log(error.message);
+          res.status(500);
+          var err = new Error();
+          error.statusCode = 500;
+          next(err)
+     }
+});
 
-     res.render("user/home", {home:true,  user: USER ,category,products,
-          count:count
-     });
-})
 //contactControler
 const contactControler = (req, res) => {
-     res.render("user/contact", { home: true });
+     try{
+
+          res.render("user/contact", { home: true });
+     }
+     catch(error){
+          console.log(error.message);
+          res.status(500);
+          var err = new Error();
+          
+          next(err)
+
+     }
 };
 
 //aboutControler
 const aboutControler = (req, res) => {
-     res.render("user/about",{home:true});
+     try{
+
+          res.render("user/about", { home: true });
+     }
+     catch(error){
+          console.log(error.message);
+          res.status(500);
+          var err = new Error();
+          
+          next(err)
+     }
 };
 //siguppostcontroler
 const signupPostControler = asyncHandler(async (req, res) => {
-   
-    
      try {
           const user = await UserCollection.findOne({ email: req.body.email });
           if (!user) {
@@ -97,288 +149,327 @@ const signupPostControler = asyncHandler(async (req, res) => {
 
                res.redirect("/user_otp");
           } else {
-               res.render("user/signup", { emailFind: true,home:true });
+               res.render("user/signup", { emailFind: true, home: true });
+          }
+     } catch (error) {
+          console.log(error.message);
+        
+          var err = new Error();
+          error.statusCode = 400;
+          next(err)
+     }
+});
+
+//otp controler
+const otpControler = (req, res) => {
+     try{
+
+          generateOTP(req.session.user.email).then((OTP) => {
+               req.session.otp = OTP;
+               
+               res.redirect("/user_generate");
+          });
+     }
+     catch(error){
+          console.log(error.message);
+         
+          var err = new Error();
+          error.statusCode = 400;
+          next(err)
+     }
+}
+
+//Generate otp
+const OTPgeneration = asyncHandler( (req, res) => {
+     try{
+
+          res.render("OTP/otp", { ph: req.session.user.email });
+     }
+     catch(error){
+          console.log(error.message);
+        
+          var err = new Error();
+          error.statusCode = 400;
+          next(err)
+     }
+});
+//otp post controler 
+
+const otpPostControler = asyncHandler(async (req, res) => {
+     try{
+          if (req.body.otp == req.session.otp) {
+               const userObj = await UserCollection.create(req.session.user);
+               console.log("userobject" + userObj);
+               req.session.user = userObj;
+     
+               res.redirect("/user_home");
+          } else {
+               res.redirect("/user_otpError");
+          }
+
+     }
+     catch(error){
+          console.log(error.message);
+    
+          var err = new Error();
+          error.statusCode = 400;
+          next(err)
+     }
+     
+     
+});
+
+//otp error
+const otpError = (req, res) => {
+     try{
+
+          res.render("OTP/otpErr");
+     }
+     catch(error){
+          console.log(error.message);
+        
+          var err = new Error();
+          error.statusCode = 400;
+          next(err) 
+     }
+};
+
+//user reset password
+
+const userResetPassword = async (req, res) => {
+     res.render("user/reset-password", { email: req.session.user.email });
+};
+
+//user reset password post
+const userResetPasswordPost = async (req, res) => {
+     const userFound = await UserCollection.findOne({ email: req.body.email });
+
+     if (userFound) {
+          req.session.resetEmail = req.body.email;
+
+          res.render("user/reset-password-user-found", { email: userFound.email });
+     } else {
+          res.render("user/usernot-found");
+     }
+};
+//pasword reset succuss
+
+const passwordResetSuccessPost = asyncHandler(async (req, res) => {
+     const email = req.session.resetEmail;
+     const salt = 10;
+     const password = await bcrypt.hash(req.body.password, salt);
+
+     try {
+          const newUser = await UserCollection.findOneAndUpdate({ email: email }, { password: password });
+
+          req.session.user = newUser;
+          res.render("user/password-change-success-page");
+     } catch (error) {
+          throw new Error(error.message);
+     }
+});
+
+//userprofile
+
+const userProfile = async (req, res) => {
+     res.render("user/profile", { home: true });
+};
+
+///logout controler
+
+const logout = (req, res) => {
+     req.session.user = null;
+     res.redirect("user_home");
+};
+
+////forgot password
+
+const forgotPassword = (req, res) => {
+     res.render("user/forgot-password");
+};
+
+//forgotpassword post controler
+
+const forgotPasswordPost = asyncHandler(async (req, res) => {
+     try {
+          const userFound = await UserCollection.findOne({ email: req.body.email });
+          if (userFound.isActive) {
+               if (userFound) {
+                    req.session.forgotPasswordEmail = req.body.email;
+
+                    res.redirect("/forgot-password-generate-otp");
+               } else {
+                    res.render("user/forgot-password", { userNotFound: true });
+               }
+          } else {
+               res.render("user/login", { isActive: true });
           }
      } catch (error) {
           throw new Error(error.message);
      }
 });
 
-//otp controler
-const otpControler = (req, res) => {
-     generateOTP(req.session.user.email).then((OTP) => {
-          req.session.otp = OTP;
-
-          res.redirect("/user_generate");
-     });
-};
-
-//Generate otp
-const OTPgeneration = (req, res) => {
-     res.render("OTP/otp", { ph: req.session.user.email });
-};
-//otp post controler
-
-const otpPostControler = asyncHandler(async (req, res) => {
-     if (req.body.otp == req.session.otp) {
-          const userObj = await UserCollection.create(req.session.user);
-          console.log('userobject'+ userObj)
-          req.session.user=userObj
-
-          res.redirect("/user_home");
-     } else {
-          res.redirect("/user_otpError");
-     }
-});
-
-//otp error
-const otpError = (req, res) => {
-     res.render("OTP/otpErr");
-};
-
-//user reset password
- 
-const userResetPassword =async (req,res)=>{
-     res.render("user/reset-password",{email:req.session.user.email})
-}
- 
-//user reset password post 
-const userResetPasswordPost = async (req,res)=>{
-     const userFound = await UserCollection.findOne({email:req.body.email});
-     
-         if(userFound){
-          req.session.resetEmail= req.body.email;
-         
-          res.render('user/reset-password-user-found',{email:userFound.email})
-              
-         }
-         else{
-
-              res.render("user/usernot-found")
-         }
-
-}
-//pasword reset succuss
-
-const passwordResetSuccessPost =asyncHandler(async(req,res)=>{
-     const email= req.session.resetEmail;
-     const salt = 10;
-     const password=await bcrypt.hash( req.body.password,salt);
-
-       try{
-          const newUser = await UserCollection.findOneAndUpdate({email:email},{password:password});
-          
-          req.session.user=newUser;
-           res.render("user/password-change-success-page")   
- 
-       }
-       catch(error){
-          throw new Error(error.message)
-       }
-
-    
-     
-       
-
-} )
-
-//userprofile
-
-const userProfile=async (req,res)=>{
-     res.render("user/profile",{home:true})
-}
-
-///logout controler
-
-const logout = (req,res)=>{
-     req.session.user=null;
-     res.redirect("user_home");
-}
-
-
-////forgot password
-
-const forgotPassword =(req,res)=>{
-
-     res.render('user/forgot-password')
-}
-
-//forgotpassword post controler
-
-const forgotPasswordPost =asyncHandler(async(req,res)=>{
-
-     try{
-            const userFound = await UserCollection.findOne({email:req.body.email});
-            if(userFound.isActive){
-
-                 if(userFound){
-                    req.session.forgotPasswordEmail=req.body.email;
-                   
-     
-                         res.redirect('/forgot-password-generate-otp')
-                 }
-                 else{
-                    res.render('user/forgot-password',{userNotFound:true})
-                 }
-            }
-            else{
-               res.render("user/login",{isActive:true})
-            }
-     }
-     catch(error){
-          throw new Error(error.message)
-     }
-    
-          
-})
-
 //forgot password generate otp
 
-const forgotPasswordGenerateOtp = asyncHandler(async (req,res)=>{
-   
-     
-     generateOTP(req.session.forgotPasswordEmail).then((OTP)=>{
-             req.session.otp=OTP;
-             res.redirect("forgot-password-check-otp")
-     })
-}
-)
+const forgotPasswordGenerateOtp = asyncHandler(async (req, res) => {
+     generateOTP(req.session.forgotPasswordEmail).then((OTP) => {
+          req.session.otp = OTP;
+          res.redirect("forgot-password-check-otp");
+     });
+});
 
 //forgot password checkotp
 
-const forgotPasswordCheckOtp = asyncHandler(async(req,res)=>{
-     try{
-          res.render('user/forgot-password-check-otp',{email:req.session.forgotPasswordEmail})
-
-     }
-     catch(error){
+const forgotPasswordCheckOtp = asyncHandler(async (req, res) => {
+     try {
+          res.render("user/forgot-password-check-otp", { email: req.session.forgotPasswordEmail });
+     } catch (error) {
           throw new Error(error.message);
      }
-})
-//FORGOT PASSWORD CHECK OTP POST 
+});
+//FORGOT PASSWORD CHECK OTP POST
 
-const forgotPasswordCheckOtpPost = asyncHandler(async(req,res)=>{
-     try{
+const forgotPasswordCheckOtpPost = asyncHandler(async (req, res) => {
+     try {
+          if (req.session.otp == req.body.otp) {
+               req.session.user = await UserCollection.findOne({ email: req.session.forgotPasswordEmail });
 
-          if(req.session.otp==req.body.otp){
-               req.session.user=await UserCollection.findOne({email:req.session.forgotPasswordEmail});
-               
-               res.redirect("user_resetpassword")
-               
+               res.redirect("user_resetpassword");
+          } else {
+               res.render("user/forgotpassword-failed");
           }
-          else{ 
-
-            res.render('user/forgotpassword-failed')
-          }
-          
-
-     }
-     catch(error){
+     } catch (error) {
           throw new Error(error.message);
      }
-})
-
-
+});
 
 ///user view products
 
-const userViewProducts = asyncHandler(async(req,res)=>{
+const userViewProducts = asyncHandler(async (req, res) => {
+   
+      try{
+
+      
      
-     var products;
-     var count;
-     let cartCount = await cartCollection.findOne({user:req.session.user._id})
-     if(cartCount){
-          count = cartCount.products.length
-     }
-     else{
-          count=null
-     }
-    
-       
-     if(req.session.search)
-     {
-           products = await productCollection.find({category:{$regex:req.session.search,$options:'i'}}).lean()
-           const category = await categoryCollection.find({}).lean()
-           res.render("user/view-products",{products,category,user:req.session.user._id,count:count})
-          
-
-     }
-     else{
-
-          products =await productCollection.find({}).lean()
-          const category = await categoryCollection.find({}).lean()
-          if(products){
-     
-               res.render("user/view-products",{products,category,user:req.session.user._id,count:count})
-             
-          }
-     }
-})
-
-//product details page
-const productDetails = asyncHandler(async(req,res)=>{
-  
-     const product = await productCollection.findOne({_id:req.query.id}).lean();
-     const products= await productCollection.find({}).lean().limit(2);
-     const image1=product.subImage[0];
-     const image2=product.subImage[1];
-     const image3=product.subImage[2];
-     const image4=product.subImage[3];
-     const image5=product.subImage[4];
-
    
 
+          if (!req.session.page) {
+               req.session.page = 1;
+          }
+          const page = req.session.page;
+          
+          //pagination
+          
+          ////////////////////////////
+          var products;
+          var count;
+          let cartCount = await cartCollection.findOne({ user: req.session.user._id });
+          if (cartCount) {
+               count = cartCount.products.length;
+          } else {
+               count = null;
+          }
+          
+          const pro = await productCollection.find({}).lean();
+          var productLength = pro.length;
+          let pages = [1];
+          let inc = 1;
+          for (i = 1; i < productLength; i++) {
+               if (i % 8 == 0) {
+                    inc++;
+                    pages.push(inc);
+               }
+          }
+          
+          products = await productCollection.find({}).skip(req.session.skip).limit(8).lean();
+          const category = await categoryCollection.find({}).lean();
+          if (products) {
+               res.render("coupon/products", {
+                    products,
+                    category,
+                    user: req.session.user._id,
+                    count: count,
+                    user: true,
+                    pages,
+                    page,
+               });
+          
+     }}
+     catch(error){
+          console.log(error.message);
+          
+          var err = new Error();
+          error.statusCode = 500;
+          next(err)
+     }
+   
+});
+
+//product details page
+const productDetails = asyncHandler(async (req, res) => {
+     const product = await productCollection.findOne({ _id: req.query.id }).lean();
+     const products = await productCollection.find({}).lean().limit(2);
+     const image1 = product.subImage[0];
+     const image2 = product.subImage[1];
+     const image3 = product.subImage[2];
+     const image4 = product.subImage[3];
+     const image5 = product.subImage[4];
+
+     res.render("user/product-details", { product, products, image1, image2, image3, image4, image5 });
+});
+
+//changeProductCategory
+
+const changeProductCategory = asyncHandler(async (req, res) => {
+     try{
+
+          const category = await categoryCollection.find({}).lean();
+          const products = await productCollection.find({ category: req.params.id }).lean();
      
-
-     res.render('user/product-details',{product,products,image1,image2,image3,image4,image5})
-})
-
-//changeProductCategory 
-
-const changeProductCategory=asyncHandler(async(req,res)=>{
+          req.session.products = products;
+          req.session.category = category;
      
-     // console.log(req.params.id)
-     
-     const category= await categoryCollection.find({}).lean();
-     const products = await productCollection.find({category:req.params.id}).lean();
-     
-
-     req.session.products=products;
-     req.session.category=category;
-
-     if(products){
-
-          res.redirect("/changed")
+          if (products) {
+               res.redirect("/changed");
+          }
+     }
+     catch(error){
+          console.log(error.message);
+          res.status(500);
+          var err = new Error();
+          error.statusCode = 500;
+          next(err)
      }
      // console.log(req.params.id)
-     
+
+     // console.log(req.params.id)
+
      // const category= await categoryCollection.find({}).lean();
      // const products = await productCollection.find({category:req.params.id}).lean();
      // if(products){
      //      res.render("user/view-products",{home:true,products,category})
      // }
+});
 
+const changed =asyncHandler( (req, res) => {
+     try{
 
+          const category = req.session.category;
+          const products = req.session.products;
+          res.render("user/view-products", { home: true, products, category });
+     }catch(error){
+          console.log(error.message);
+        
+          var err = new Error();
+          error.statusCode = 500;
+          next(err)
+     }
+});
 
-
-
-})
-
-
-const changed=(req,res)=>{
-     const category= req.session.category;
-     const products= req.session.products;
-     res.render("user/view-products",{home:true,products,category})
-
-}
-
-
-const blog =(req,res)=>{
-     res.render("user/blog",{home:true})
-}
+const blog = (req, res) => {
+     res.render("user/blog", { home: true });
+};
 /////////////////////////
-
-
 
 module.exports = {
      landingControler,
@@ -407,6 +498,5 @@ module.exports = {
      productDetails,
      changeProductCategory,
      changed,
-     blog
-   
+     blog,
 };

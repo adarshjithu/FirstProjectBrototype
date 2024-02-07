@@ -1,186 +1,176 @@
-{{!-- 
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login Form | By Code Info</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <style>
-    <span style="font-family: verdana, geneva, sans-serif;">*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
-}
-
-body{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: tomato;
-}
-.container{
-    width: 100%;
-    display: flex;
-    max-width: 850px;
-    background: #fff;
-    border-radius: 15px;
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-}
-.login{
-    width: 400px;
-}
-form{
-    width: 250px;
-    margin: 60px auto;
-}
-h1{
-    margin: 20px;
-    text-align: center;
-    font-weight: bolder;
-    text-transform: uppercase;
-}
-
-p{
-    text-align: center;
-    margin: 10px;
-}
-hr{
-    border-top: 2px solid tomato;
-}
-
-.pic img{
-    width: 450px;
-    height: 100%;
-    border-top-right-radius: 15px;
-    border-bottom-right-radius: 15px;
-}
-
-form label{
-    display: block;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 5px;
-}
-input{
-    width: 100%;
-    margin: 2px;
-    border: none;
-    outline: none;
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid gray;
-}
-button{
-    border: none;
-    outline: none;
-    padding: 8px;
-    width: 252px;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    margin-top: 20px;
-    border-radius: 5px;
-    background: tomato;
-}
-button:hover{
-    background: rgba(214, 86, 64, 1);
-}
-p{
-    margin: 20px;
-}
-a{
-    color: black;
-    text-decoration: none;
-}
-</span>
-  </style>
-    <div class="container">
-        <div class="login">
-            <form method="post" action="/admin/login">
-                <h1> Login</h1>
-                <hr>
-                <p>Admin Login here.. </p>
-                <label>Email</label><br>
-                {{#if error}}  <span style="color: red;">Admin Not exist</span> {{/if}}
-                {{#if err.email.path}} <span style="color: red;">{{err.email.msg}}</span>{{/if}}
-                <input required type="email" name="email" placeholder="">
-                <label>Password</label><br>
-                {{#if err.password.path}} <span style="color: red;">{{err.password.msg}}</span>{{/if}}
-                <input required type="password" name="password" placeholder="">
-                <button style="background-color: blue;" type="submit" >Submit</button>
-                 <p>
-                    <a href="#">Forgot Password?</a> 
-                </p>
-                <button style="background-color: green;"><a style="color: white;" href="/">Back to App</a></button>
-            </form>
-        </div>
-        <div class="pic">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNkZJZO6NvOYTqpyCGdANzp-kB-f5Vc3ivo9gbHwOoeiJUc2abNXlZqps9vQcUtjWICv8&usqp=CAU">
-        </div>
-    </div>
-
-</body>
-</html> 
-
- --}}
 
 
+        <style>
+      @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-
-<div class="brand_color">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="titlepage">
-                        <h2>Login</h2>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- contact -->
-    <div class="contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
+* {
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family: 'Montserrat', sans-serif;
+}
+.wrapper {
+  display:flex;
+  justify-content:center;
+  align-items: center;
+  height:100vh;
+  width:100%;
+  background:url('http://codingstella.com/wp-content/uploads/2024/01/download-5.jpeg') no-repeat;
+  background-size:cover;
+  background-position:center;
+  animation:animateBg 5s linear infinite;
+}
+@keyframes animateBg {
+  100% {
+    filter:hue-rotate(360deg);
+  }
+}
+.login-box {
+  position: relative;
+  width: 400px;
+  height: 450px;
+  background: transparent;
+  border-radius: 15px;
+  border: 2px solid rgba(255,255,255,.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(15px);
+}
+h2 {
+  font-size:2em;
+  color:#fff;
+  text-align:center;
+}
+.input-box {
+  position:relative;
+  width:310px;
+  margin:30px 0;
+  border-bottom:1px solid #fff;
+}
+.input-box label {
+  position:absolute;
+  top:50%;
+  left:5px;
+  transform:translateY(-50%);
+  font-size:1em;
+  color:#fff;
+  pointer-events:none;
+  transition:.5s;
+}
+.input-box input:focus  ~ label,
+.input-box input:valid  ~ label {
+  top:-5px;
+}
+.input-box input {
+  width:100%;
+  height:50px;
+  background:transparent;
+  border:none;
+  outline:none;
+  font-size:1em;
+  color:#fff;
+  padding:0 35px 0 5px;
+}
+.input-box .icon {
+  position:absolute;
+  right:8px;
+  top:50%;
+  color: #fff;
+  transform: translateY(-50%);
+}
+.remember-forgot {
+  margin:-15px 0 15px;
+  font-size:.9em;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+}
+.remember-forgot label input {
+  margin-right:3px;
+}
+.remember-forgot a {
+  color:#fff;
+  text-decoration:none;
+}
+.remember-forgot a:hover {
+  text-decoration:underline;
+}
+button {
+  width:100%;
+  height:40px;
+  background-color:#fff;
+  border:none;
+  border-radius:40px;
+  cursor:pointer;
+  font-size:1em;
+  color:#000;
+  font-weight;500;
+}
+.register-link {
+  font-size:.9em;
+  color:#fff;
+  text-align:center;
+  margin:25px 0 10px;
+}
+.register-link p a {
+  color:#fff;
+  text-decoration:none;
+  font-weight:600;
+}
+.register-link p a:hover {
+  text-decoration:underline;
+}
+@media (max-width:500px) {
+  .login-box {
+    width:100%;
+    height:100vh;
+    border:none;
+    border-radius:0;
+  }
+  .input-box {
+    width:290px;
+  }
+}
+    </style>
+   <div class="wrapper">
     
-                   
-                   
-   
-        
-                   
-                   
-   
-                   
 
-                    <form class="main_form" action="/admin/login" method="post">
-                        <div class="row">
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                {{#if error}}  <span style="color: red;">Admin Not exist</span> {{/if}}
+  <div class="login-box">
+    <form action="/admin/login" method="post">
+      <h2>Login</h2>
+     
+
+      <div class="input-box">
+        <span class="icon">
+          <ion-icon name="mail"></ion-icon>
+        </span>
+        <input type="email" style="text-transform: none;" required name="email">
+                                        {{#if error}}  <span style="color: red;">Admin Does't exist</span> {{/if}}
                 {{#if err.email.path}} <span style="color: red;">{{err.email.msg}}</span>{{/if}}
-                              
-                                <input class="form-control" placeholder="Enter Email" type="email" name="email">
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6">
-                                  {{#if err.password.path}} <span style="color: red;">{{err.password.msg}}</span>{{/if}}
-                              
-                                <input class="form-control" placeholder="Enter Password" type="password" name="password">
-                            </div>
-                            
-                            
-                            <div class=" col-md-12">
-                                <button class="send" type="submit">Submit</button>
-                            {{!-- <a href="/user_signup">Already Have an Account</a> --}}
-                              {{!-- <a href="/user_forgotpassword" class="link-secondary text-decoration-none">Forgot Password</a><br> --}}
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
+        <label>Email</label>
+      </div>
+
+      <div class="input-box">
+        <span class="icon">
+          <ion-icon name="lock-closed"></ion-icon>
+        </span>
+        <input type="password"  style="text-transform: none;" required name="password">
+         {{#if err.password.path}} <span style="color: red;">{{err.password.msg}}</span>{{/if}}
+        <label>Password</label>
+      </div>
+
+      <div class="remember-forgot">
+        <label><input type="checkbox"> Remember me</label>
+        <a href="/user_forgotpassword">Forgot Password?</a>
+      </div>
+
+      <button type="submit" style="background-color: red; color: white;">Login</button>
+
+      {{!-- <div class="register-link">
+        <p>Don't have an account? <a href="/user_signup">Register</a></p>
+      </div> --}}
+    </form>
+  </div>
+
+</div>

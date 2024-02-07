@@ -3,10 +3,11 @@ const orderSchema = new mongoose.Schema({
     user:String,
     address:Object,
     payment:String,
-    total:String,
-    subtotal:String,
-    discount:String,
+    total:Number,
+    subtotal:Number,
+    discount:Number,
     couponId:String,
+    offers:Number,
     products:Array,
     orderedAt:{type:String,default:function(){
         return new Date().toDateString()

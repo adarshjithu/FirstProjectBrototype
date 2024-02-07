@@ -24,20 +24,34 @@
         .disablePayment{
             display: none;
         }
+
+        .ul{
+          display: none;
+        }
+        .shows{
+          display: none;
+        }
+      
+        input[type='radio']{
+          accent-color: red;
+        }
+        .alert-box{
+          background-color: red;
+        }
     </style>
 
-    <div class="container">
+    <div style="padding: 2%;background-color: #DEE2E5;" >
+       
+        
       <div class="py-5 text-center">
         
-        <h2>CHECKOUT</h2>
-        
 
-      <div class="row">
+      <div class="row" style="">
          {{!-- cartDetails --}}
-        <div class="col-md-4 order-md-2 mb-4">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-muted">Your cart</span>
-            <span class="badge badge-secondary badge-pill">3</span>
+        <div class="col-md-4 order-md-2 mb-4" style="margin-left: 100px;border-radius: 5px;">
+          <h4 class="d-flex justify-content-between align-items-center mb-3" style="box-shadow: 1px 1px 10px grey;">
+         
+    
           </h4>
           <ul class="list-group mb-3">
             {{#each cart}}
@@ -47,7 +61,7 @@
                 <h6 class="my-0">{{this.product.name}}</h6>
                 <small class="text-muted">{{this.count}} X {{this.product.price}}</small>
               </div>
-              <span class="text-muted">{{this.total}}</span>
+              <h6 class="text-muted" style="color: black;font-weight: 600;">{{this.total}}</h6>
             </li>
             {{/each}}
 
@@ -55,6 +69,10 @@
             <li class="list-group-item d-flex justify-content-between">
               <span>Total Discount</span>
               <span id="discount">123</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Offers</span>
+              <span id="offer">0</span>
             </li>
             <li class="list-group-item d-flex justify-content-between">
               <span >Sub Total</span>
@@ -68,46 +86,114 @@
 
 
 
-          <form class="card p-2">
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Promo code" name="promocode">
-              <div class="input-group-append">
-                <button type="submit" class="btn btn-primary">Redeem</button>
-              </div>
-            </div>
-          </form>
+  
+
+          
+          <div class="coupons" style="box-shadow: 1px 1px 10px grey;">
+           
+          
+          <div style="width: 100%;margin-top: 20px;">
+            <span class="userId" style="display: none;">{{userId}}</span>
+            
+            <a onclick="toggle()" class="btn" style="color: white;width: 100%;color: white;background-color: white;color: red;border: 1px solid red;">Select Avaiable Coupon</a>
+            <ul id="ul" class="ul">
+                   
+              {{#each coupon}}
+              <li style="border: 1px solid #f7464f;display: flex;justify-content: space-around;margin-top: 10px;" id="{{this._id}}">
+                <img src="/assets/products/{{this.image}}" style="width: 25px;height: 25px;" alt="">
+                <span>{{this.couponname}}</span>
+                <span>{{this.discount}}% discount</span>
+             
+             
+
+                <button id="{{this._id}}" class="btn btn-primary" onclick="applyCoupon('{{this._id}}','{{this.couponcode}}','{{this.discount}}')">Apply</button>
+                
+              </li>
+              {{/each}}
+            </ul>
+          </div>
+          </div>
 
           
         </div>
+        {{!-- ////////////////////////////////////////////////////////////////////////////////////////////// --}}
         
-           
+        
           {{!-- cartdetails --}}
 
-        <div class="col-md-8 order-md-1" style="border: 1px solid rgb(203, 193, 193);border-radius: 10px; background-color:#DEE2E5; ">
-          <h4 class="mb-3">Billing address</h4>
+        <div class="col-md-6 order-md-1 ">
+         {{!-- addrsss --}}
+               {{#if noAddress}}
+               <input style="display: none;" type="text" id="addressError" value="{{noAddress}}">
+               <span class="text-danger" style="font-weight: 600;margin-bottom: 20px;"> Address Not Found Add New Address or Select Another Address Type</span> {{/if}}
+         <div style="box-shadow: 1px 1px 10px grey;">
+         <div class="col-xl-12 col-md-12" id="address" style="width: 100%;height: 30%;border: 1px solid red;background-color: white;border-radius: 5px;margin-bottom: 10px;display: flex;flex-direction: row;padding: 10px;">
+           <div class="l">
+            <h6>Delivery To :</h6>
+            </div>
+           <div class="r" style="margin-left: 20px;">
+            <div style="display: flex;align-items: flex-start;">
+              
+            <h6>{{address.firstname}}</h6>
+            </div>
+            <h6>{{address.address}}</h6>
+           <div style="display: flex;align-items: flex-start;">
+              
 
+            <h6>{{address.country}},&nbsp;{{address.state}},&nbsp;{{address.city}}&nbsp;</h6>
+            </div>
+           <div style="display: flex;align-items: flex-start;">
+              
 
+            <h6>{{address.zipcode}}&nbsp;,{{address.phonenumber}}</h6>
+            </div>
+            </div>
+         </div>
+         <div class="col-xl-12 col-md-12" id="address" style="width: 100%;max-height: 10%;border: 1px solid red;background-color: white;border-radius: 5px;margin-bottom: 10px;display: flex;align-items: flex-start;padding: 10px;min-height: 10%;">
+          <a onclick="toggles()" style="color: red;font-weight: 700;"> + Add New Address</a>
+         </div>
+         {{!-- select category --}}
+
+         <div class="col-xl-12 col-md-12" id="address" style="width: 100%;max-height: 10%;border: 1px solid red;background-color: white;border-radius: 5px;margin-bottom: 10px;display: flex;align-items: flex-start;min-height: 10%;">
+                   <div class="col-md-4 mb-3">
+                <label for="state">
+                           <h6 onclick="toggles()" style="color: red;font-weight: 700;margin-top: 10px;"> Select Address</h6>
+                </label>
+                <select onchange="change()"  class="custom-select d-block w-100" id="add" style="border: 1px solid red;">
+                  <option value="">Choose..</option>
+                  <option value="home" >Home</option>
+                  <option value="work" >Work</option>
+                  <option value="address-1">Address-1</option>
+                  <option value="address-2">Address-2</option>
+                </select>
+                <div class="invalid-feedback">
+                  Please provide a valid state.
+                </div>
+              </div>
+         </div>
+          </div>
 
           {{!-- checkout form --}}
-          <form class="needs-validation" novalidate method="post" action="/cart/checkout">
+          <form  method="post" action="/cart/checkout" style="background-color: #DEE2E5;" id="AddressValidateForm">
+          <div style="" class="shows" id="addr">
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="firstName">First name</label> 
                   {{!-- firstname --}}
-                <input type="text" class="form-control" id="firstName" placeholder="" value="{{address.firstname}}" required name="firstname">
+                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="text"  id="firstname" placeholder="" value="{{address.firstname}}" name="firstname">
+                <span class="firstnameErr" style="color: red;font-weight: 600;"></span>
                  {{!-- firstname --}}
-                <div class="invalid-feedback">
-                  Valid first name is required.
-                </div>
+               
               </div>
 
               <div class="col-md-6 mb-3">
                 <label for="lastName">Last name</label>
                 {{!-- lastname --}}
-                <input type="text" class="form-control" id="lastName" placeholder="" value="{{address.lastname}}" required name="lastname">
+                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="text"  id="lastname" placeholder="" value="{{address.lastname}}" name="lastname">
+                <span id="lastnameErr" style="color: red;font-weight: 600;"></span>
                  {{!-- lastname --}}
                 <div class="invalid-feedback">
-                  Valid last name is required.
+                
                 </div>
               </div>
             </div>
@@ -119,10 +205,10 @@
             {{!-- address --}}
             <div class="mb-3">
               <label for="address">Address</label>
-              <input value="{{address.address}}" type="text" class="form-control" id="address" placeholder="1234 Main St" required name="address">
-              <div class="invalid-feedback">
-                Please enter your address.
-              </div>
+              <input style="border: 1px solid #f7464f;border-radius: 10px;" class="address" value="{{address.address}}" type="text"  placeholder="" required name="address">
+              <span id="addressErr" style="font-weight: 600;color: red;"></span>
+             
+          
             </div>
             {{!-- address --}}
 
@@ -130,7 +216,8 @@
               <div class="col-md-6 mb-3">
                 <label for="firstName">Email </label> 
                   {{!-- firstname --}}
-                <input type="email" class="form-control" id="firstName" placeholder="" value="{{address.email}}" required name="email">
+                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="email"  id="email" placeholder="" value="{{address.email}}" required name="email">
+                <span id="emailErr" style="font-weight: 600;color: red;"></span>
                  {{!-- firstname --}}
                 <div class="invalid-feedback">
                   Valid Email is required.
@@ -140,7 +227,8 @@
               <div class="col-md-6 mb-3">
                 <label for="lastName">Phone Number</label>
                 {{!-- lastname --}}
-                <input type="phonenumber" class="form-control" id="lastName" placeholder="" value="{{address.phonenumber}}" required name="number">
+                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="phonenumber"  id="phonenumber" placeholder="" value="{{address.phonenumber}}" name="number">
+                <span id="phonenumberErr" style="color: red;font-weight: 600;"></span>
                  {{!-- lastname --}}
                 <div class="invalid-feedback">
                   Valid Phone Number is required.
@@ -185,27 +273,15 @@
                {{!-- zip --}}
               <div class="col-md-3 mb-3">
                 <label for="zip">Zip</label>
-                <input type="text" class="form-control" id="zip" value="{{address.zipcode}}" placeholder="" required name="zipcode">
+                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="text"  id="zipcode" value="{{address.zipcode}}" placeholder="" name="zipcode">
+                <span id="zipcodeErr" style="color: red;font-weight: 600;"></span>
                 <div class="invalid-feedback">
                   Zip code required.
                 </div>
               </div>
 
 
-              <div class="col-md-4 mb-3">
-                <label for="state">Select Address Type</label>
-                <select onchange="change()"  class="custom-select d-block w-100" id="add">
-                  <option value="">Choose..</option>
-                  <option value="home" >Home</option>
-                  <option value="work" >Work</option>
-                  <option value="address-1">Address-1</option>
-                  <option value="address-2">Address-2</option>
-                </select>
-                <div class="invalid-feedback">
-                  Please provide a valid state.
-                </div>
-              </div>
-
+           
              
               
                {{!-- zip --}}
@@ -215,80 +291,56 @@
             <hr class="mb-4">
             {{!-- address slection --}}
     
+              </div>
 
+        
+              <div style="display: flex;justify-content: center;display: none;" id="saveAddress" >
+          <input type="radio" name="save" id="cod"  value="true"  style="height:25px;width: 25px;margin-left: 20px;background-color: red;"   >
+                   <label for="" style="margin-left: 10px;">Save Address</label>
+                   
+               
+              
+           
+            </div>
+            <div style="background-color: white; border: 1px solid red;border-radius: 5px;">
 
             <h4 class="mb-3">Payment</h4>
 
-             <div class=" my-3">
-               
-                   <input type="radio" name="payment" id="cod" onclick="changePayment()" value="COD"  >
-                   <label for="">Cash On Delivery</label>
+             <div  class=" my-3" style="display: flex;">
+
+                   
+
+                   <input type="radio" name="payment" id="cod" onclick="changePayment()" value="COD"  style="height:25px;width: 25px;margin-left: 20px;background-color: red;" checked  >
+                   <label for="" style="margin-left: 10px;">Cash On Delivery</label>
+                   
                
             
-                   <input value="online" onclick="changePayment()" type="radio" style="margin-left: 20px;" name="payment" id="onlinepayment">
-                   <label for="">Online Payments</label>
+                   <input value="online" onclick="changePayment()" type="radio" style="margin-left: 20px;height:25px;width: 25px;" name="payment" id="onlinepayment" >
+                   <label for="" style="margin-left: 10px;">Online Payments</label>
                
             
-                   <input value="creditcard" onclick="changePayment()" type="radio" style="margin-left: 20px;" name="payment" id="creditcard">
-                   <label for="">CreditCard</label>
+                   <input value="creditcard" onclick="changePayment()" type="radio" style="margin-left: 20px;height:25px;width: 25px;" name="payment" id="creditcard">
+                   <label for="" style="margin-left: 10px;">CreditCard</label>
+                
                
             
               
          
+           </div>
+            </div>
+
            
-            
-                 
-            </div>
-
-            <div class="" id="paymentmain">
-
-          
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="cc-name">Name on card</label>
-                <input type="text"  class="form-control" id="cc-name" placeholder=""  name="cartname">
-                <small class="text-muted">Full name as displayed on card</small>
-                <div class="invalid-feedback">
-                  Name on card is required
-                </div>
-              </div>
-              <div class="col-md-6 mb-3">
-                <label for="cc-number">Credit card number</label>
-                <input type="number" class="form-control" id="cc-number" placeholder="" name="cartnumber">
-                <div class="invalid-feedback">
-                  Credit card number is required
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-md-3 mb-3">
-                <label for="cc-expiration">Expiration</label>
-                <input type="text" name="expirydate" class="form-control" id="cc-expiration" placeholder="" >
-                <div class="invalid-feedback">
-                  Expiration date required
-                </div>
-              </div>
-              <div class="col-md-3 mb-3">
-                <label for="cc-expiration">CVV</label>
-                <input type="text" name="cvv" class="form-control" id="cc-cvv" placeholder="" >
-                <div class="invalid-feedback">
-                  Security code required
-                </div>
-              </div>
-            </div>
-
-              </div>
             <hr class="mb-4">
             <input type="number"  name="total" id="t" value="" style="display: none;">
+            <input type="number" id="of" value="" style="display: none;" name="offers">
             <input type="number" name="subtotal" id="s" value="" style="display: none;">
             <input type="number" name="discount" id="d" value="" style="display: none;">
-            <button class="btn btn-success btn-lg btn-block" type="submit"> PLACE ORDER </button>
+            <button class="btn btn-lg btn-block" type="submit" style="background-color: red;color: white;font-weight: 600;"> PLACE ORDER </button>
           </form>
 
           {{!-- checkoutform --}}
         </div>
+         
       </div>
 
    
@@ -370,6 +422,9 @@ if(creditcard){
 if(cod){
     document.getElementById("paymentmain").classList.add('disablePayment')
 }
+if(onlinepayment){
+    document.getElementById("paymentmain").classList.add('disablePayment')
+}
 
 }
 
@@ -383,6 +438,210 @@ function change(e){
   })
 }
 
+</script>
+
+<script>
+  function toggle(){
+    document.getElementById('ul').classList.toggle("ul")
+  }
+</script>
+
+<script>
+  function applyCoupon(couponId,couponCode,discount){
+    var userId = document.querySelector(".userId").innerHTML;
+    const total = document.getElementById("total").innerHTML;
+    var discountPrice = (total*10)/100;
+    console.log(couponId,userId,couponCode,discount);
+document.getElementById('t').value-=parseInt( discountPrice)
+document.getElementById("offer").innerHTML=parseInt(document.getElementById("offer").innerHTML)+parseInt(discountPrice)
+document.getElementById("of").value=parseInt(document.getElementById("offer").innerHTML)+parseInt(discountPrice)
+      
+    alert(`YOU WON ${discountPrice} DISCOUNT`)
+          document.getElementById("total").innerHTML=total-discountPrice
+          
+          document.getElementById(`${couponId}`).style.display='none'
+       
+         
+      fetch(`http://localhost:3000/coupon/restrict-coupon?couponId=${couponId}&&userId=${userId}`)
+  
+    
+    
+  }
+</script>
+
+<script>
+  function toggles(){
+    document.getElementById("addr").classList.toggle('shows')
+  }
+</script>
+
+<script>
+  const addressError = document.getElementById("addressError").value
+  console.log(addressError)
+
+  if(addressError){
+    alert("Address Not Found")
+  }
+</script>
+
+<script>
+
+  document.getElementById("AddressValidateForm").addEventListener('submit',function(e){
+
+     const firstName = document.getElementById("firstname").value;
+     const firstNameErr = document.querySelector(".firstnameErr");
+     const Lastname = document.getElementById("lastname").value;
+     const LastnameErr = document.getElementById("lastnameErr");
+     const address = document.querySelector(".address").value;
+     const addressErr = document.getElementById("addressErr")
+     const email = document.getElementById("email").value;
+     const emailErr = document.getElementById("emailErr")
+     const phonenumber = document.getElementById("phonenumber").value;
+     const phoneNumberErr = document.getElementById("phonenumberErr")
+     const zipcode = document.getElementById("zipcode").value;
+     const zipcodeErr = document.getElementById("zipcodeErr")
+     console.log(/\d/.test(Lastname))
+     console.log(Lastname)
+     //firtname
+      if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(firstName)==true){
+        e.preventDefault()
+        firstNameErr.innerHTML = 'Special Charector not Allowed'
+      }
+     if(/\d/.test(firstName)==true){
+    e.preventDefault()
+     firstNameErr.innerHTML='Valid Firstname Is Required'
+
+     }
+     if(firstName===""){
+          e.preventDefault()
+     firstNameErr.innerHTML='Firstname Is Required'
+     }
+     
+   
+      else if (firstName.length<=2&&firstName!==''){
+          e.preventDefault()
+     firstNameErr.innerHTML='Firstname Should be Above 2 Letters'
+     }
+     if(firstName.length>12){
+          e.preventDefault()
+     firstNameErr.innerHTML='Firstname Should be below 12 Letters'
+     } 
+     //lastname
+       if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(Lastname)==true){
+        e.preventDefault()
+        LastnameErr.innerHTML = 'Special Charector not Allowed'
+      }
+     
+     if(/\d/.test(Lastname)==true){
+    e.preventDefault()
+     LastnameErr.innerHTML='Valid Lastname Is Required'
+
+     }
+     if(Lastname.length<=2){
+          e.preventDefault()
+     LastnameErr.innerHTML='Lastname Should be Above 2 Letters'
+     }else{
+         LastnameErr.innerHTML=''
+     }
+     if(Lastname.length>12){
+          e.preventDefault()
+     LastnameErr.innerHTML='Lastname Should be below 12 Letters'
+     }
+     if(Lastname==''){
+          e.preventDefault()
+     LastnameErr.innerHTML='Lastname Is Required'
+     }
+
+     //address
+ 
+         if(/\d/.test(address)==true){
+    e.preventDefault()
+     addressErr.innerHTML='Valid Address Required'
+
+     }
+       if(address.length<=15){
+          e.preventDefault()
+     addressErr.innerHTML='address Should be Above 15 Letters'
+     }
+
+    //email
+      if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)==false){
+    e.preventDefault()
+     emailErr.innerHTML='Valid Email Required'
+
+     }
+    
+  //phonenumber
+
+        if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(phonenumber)==true){
+        e.preventDefault()
+        phoneNumberErr.innerHTML = 'Special Charector not Allowed'
+      }
+      if(phonenumber.length!==10){
+        e.preventDefault();
+        phoneNumberErr.innerHTML='10 numbers Required'
+      }
+      else{
+         phoneNumberErr.innerHTML=''
+      }
+      
+   if(/^\d+$/.test(phonenumber)!==true){
+          e.preventDefault()
+        phoneNumberErr.innerHTML = 'Invalid Value'
+      }
+      else{
+         zipcodeErr.innerHTML = ''
+      }
+    
+        //zipcode
+   if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(zipcode)==true){
+        e.preventDefault()
+        zipcodeErr.innerHTML = 'Special Charector not Allowed'
+      }
+      else{
+         zipcodeErr.innerHTML = ''
+      } 
+
+      if(/^\d+$/.test(zipcode)!==true){
+          e.preventDefault()
+        zipcodeErr.innerHTML = 'Invalid Value'
+      }
+      else{
+         zipcodeErr.innerHTML = ''
+      }
+    
+  })
+</script>
+
+
+<script>
+ var user =document.querySelector(".userId").innerHTML;
+ console.log(user)
+
+ fetch(`http://localhost:3000/cart/address-exists?id=${user}`).then((data)=>{
+  return data.json()
+ })
+.then((res)=>{
+
+   const firstName = document.getElementById("firstname").value;
+     
+     const Lastname = document.getElementById("lastname").value;
+ 
+     const address = document.querySelector(".address").value;
+
+     const email = document.getElementById("email").value;
+   
+     const phonenumber = document.getElementById("phonenumber").value;
+    
+     const zipcode = document.getElementById("zipcode").value;
+    
+  console.log(res)
+  if(res.address==false){
+    document.getElementById('saveAddress').style.display = 'inline'
+
+
+  }
+})
 </script>
 
 

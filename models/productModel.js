@@ -12,7 +12,8 @@ const productSchema = new mongoose.Schema({
     addedAt:{type:String,default:function(){
         return new Date().toDateString()
     }},
-    subImage:{type:Array,default:[]}
+    subImage:{type:Array,default:[]},
+    unlist:{type:Boolean,default:false}
     
 })
 

@@ -27,7 +27,7 @@ const validationRules = [
                return true;
           })
           .custom((value) => {
-               // Check if the password contains at least one special character
+               // Check the password contains at least one special character or not
                if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
                  throw new Error('Password must contain at least one special character');
                }

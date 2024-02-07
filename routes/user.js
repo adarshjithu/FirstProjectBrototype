@@ -49,9 +49,9 @@ app.post("/password-reset-success",
 app.get("/user_products",
 verifyLogin
 ,userViewProducts) ;
-app.get("/user-product-details",productDetails);
-app.get('/change/:id',changeProductCategory);
-app.get('/changed',changed)
+app.get("/user-product-details",verifyLogin,productDetails);
+app.get('/change/:id',verifyLogin,changeProductCategory);
+app.get('/changed',verifyLogin,changed)
   
 
 module.exports = app; 
