@@ -1,7 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const couponCollection = require("../models/couponModel");
 const cartCollection = require("../models/cartModel")
-//admincoupon
+const categoryCollection = require("../models/categoryModel")
+//admincoupon--------------------------------------------
 
 const adminViewCoupon = asyncHandler(async (req, res) => {
      try{
@@ -20,7 +21,7 @@ const adminViewCoupon = asyncHandler(async (req, res) => {
      }
 });
 
-//addcoupon
+//addcoupon----------------------------------------------------------------------------
 
 const adminAddCoupon = asyncHandler(async (req, res) => {
      try{
@@ -35,14 +36,25 @@ const adminAddCoupon = asyncHandler(async (req, res) => {
      }
 });
 
-///admin add coupon post
+///admin add coupon post---------------------------------------------------------------------
 
 const adminAddCouponPost = asyncHandler(async (req, res) => {
-     try{
-     req.body.image = req.file.filename;
 
-     await couponCollection.create(req.body);
-     res.redirect("/coupon/admin-view-coupon");
+
+     try{
+     const startDate = new Date(req.body.startdate);
+     const expiryDate = new Date( req.body.expirydate)
+     if(expiryDate>= startDate){
+          
+               await couponCollection.create(req.body);
+               res.redirect("/coupon/admin-view-coupon");
+               
+          }
+          else{
+          res.redirect("/coupon/admin-view-coupon");
+          
+     }
+
 }
      catch(error){
           console.log(error.message);
@@ -53,7 +65,7 @@ const adminAddCouponPost = asyncHandler(async (req, res) => {
      }
 });
 
-//admin delete coupon
+//admin delete coupon---------------------------------------------------------------------
 const adminDeleteCoupon = asyncHandler(async (req, res) => {
      try{
      await couponCollection.findOneAndDelete({ _id: req.query.id });
@@ -68,7 +80,7 @@ const adminDeleteCoupon = asyncHandler(async (req, res) => {
      }
 });
 
-//restrict coupon
+//restrict coupon-----------------------------------------------------------------------------
 
 const restrictCoupon = asyncHandler(async (req, res) => {
      try{
@@ -90,64 +102,92 @@ const restrictCoupon = asyncHandler(async (req, res) => {
      }
 });
 
-//user view coupon
+//user view coupon-----------------------------------------------------------
 
 const userViewCoupon = asyncHandler(async (req, res) => {
      try{
-           //finding total amount for displaying coupons
-     let cartDatas = await cartCollection.aggregate([
-          { $match: { user: req.session.user._id } },
-          { $unwind: "$products" },
+    
+     //passing category offers
 
-          {
-               $project: {
-                    item: "$products.item",
-                    count: "$products.count",
-               },
-          },
-          {
-               $lookup: {
-                    from: "products",
-                    let: { item: { $toObjectId: "$item" } },
-                    pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$item"] } } }],
-                    as: "product",
-               },
-          },
-          {
-               $project: {
-                    item: 1,
-                    count: 1,
-                    product: { $arrayElemAt: ["$product", 0] },
-               },
-          },
-          {
-               $group: {
-                    _id: null,
-                    total: { $sum: { $multiply: ["$count", "$product.price"] } },
-                    discount: { $sum: { $multiply: ["$count", "$product.discount"] } },
-               },
-          },
-     ]);
-     var total = cartDatas[0].total-cartDatas[0].discount
-     const coupons = await couponCollection.aggregate([{ $match: { minimumpurchase: { $lt: total } } }]);
+     const category = await categoryCollection.find({}).lean()
+     console.log(category)
+     
      const allCoupons = await couponCollection.find({}).lean()
-     var coupon = coupons.filter((e) => {
+     var coupon = allCoupons.filter((e) => {
           return !e.users.includes(req.session.user._id);
      });
-     console.log(allCoupons)
+     console.log(coupon)
    
 
-     res.render("coupon/user-view-coupon",{coupon,allCoupons,home:true});
+     res.render("coupon/user-view-coupon",{coupon,home:true,category});
 
      }
      catch(error){
           console.log(error.message);
           var err = new Error();
-          error.statusCode = 500;
+          error.statusCode = 400;
           next(err)
           
      }
      
     
 });
-module.exports = { userViewCoupon, adminViewCoupon, adminAddCoupon, adminAddCouponPost, adminDeleteCoupon, restrictCoupon };
+
+
+///change Coupon status----------------------------------------------------------
+
+const changeCouponStatus =  asyncHandler(async(req,res)=>{
+
+ console.log(req.query.id)
+     const coupon =  await couponCollection.findOne({_id:req.query.id});
+     console.log(coupon)
+     if(coupon.isActive == true){
+          await couponCollection.updateOne({_id:req.query.id},{
+               $set:{isActive:false}
+          })
+     }
+     else{
+
+          await couponCollection.updateOne({_id:req.query.id},{
+               $set:{isActive:true}
+          })
+     }
+  
+     
+
+     res.json({success:true})
+})
+
+
+
+// ---------------------------------------------EditCoupon------------------------------------
+
+const editCouponControler = asyncHandler(async(req,res)=>{
+     try{
+
+          console.log(req.query.id)
+          const coupon = await couponCollection.findOne({_id:req.query.id});
+          console.log(coupon)
+          res.json({coupon})
+     }
+     catch(error){
+          console.log(error.message)
+     }
+})
+
+// ------------------------------------Edit coupon post-------------------------------------------------------------
+
+const editCouponPost  = asyncHandler(async(req,res)=>{
+ 
+     if(req.body.startdate==''){
+          delete req.body.startdate
+     }
+     if(req.body.expirydate==''){
+          delete req.body.expirydate;
+     }
+     await couponCollection.findByIdAndUpdate({_id:req.body.id},req.body);
+     res.redirect("/coupon/admin-view-coupon")
+})
+
+module.exports = { userViewCoupon, adminViewCoupon, adminAddCoupon, adminAddCouponPost, adminDeleteCoupon, restrictCoupon
+,changeCouponStatus,editCouponControler,editCouponPost };

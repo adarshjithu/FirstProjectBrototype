@@ -65,14 +65,19 @@ const addToCart = asyncHandler(async (req, res) => {
 
 
 
-//cart view page
+//cart view page-------------------------------------------------------------
 
 const cartControler = asyncHandler(async (req, res) => {
  
    
      try {
-          var cart;
           const cartCount = await cartCollection.findOne({user:req.session.user._id});
+
+          if(cartCount){
+
+          
+          var cart;
+      
           
           //checking cart is empty or not 
           
@@ -125,7 +130,10 @@ const cartControler = asyncHandler(async (req, res) => {
              cart = cartDetails
           }
          
-          res.render("cart/cart", { home: true, cart });}
+          res.render("cart/cart", { home: true, cart });}}
+          else{
+               res.render("cart/cart-empty")
+          }
           
      } catch (error) {
          
@@ -138,8 +146,30 @@ const cartControler = asyncHandler(async (req, res) => {
      }
 });
 
-//delete cart item
+//delete cart item-------------------------------------------------------------------
 const deleteCartItem = asyncHandler(async (req, res) => {
+     try{
+     var cartCount= await cartCollection.findOne({user:req.session.user._id});
+     
+
+     //check if is the cartcount is zero if the cart count is zero we dont want the cart need to delete the whole cart;
+     if (cartCount.products.length == 1){
+          var cartObj = await cartCollection.findOne({user:req.session.user._id});
+
+          let product =  cartObj.products.filter((e)=>{
+               return e.item ==  req.params.id;
+          })
+     
+     
+          await productCollection.updateOne({_id:product[0].item},{$inc:{quantity:product[0].count}})
+        
+          await cartCollection.deleteOne({user:req.session.user._id});
+          res.redirect("/cart/view-cart");
+     }
+     else{
+
+     
+     
      
      var cartObj = await cartCollection.findOne({user:req.session.user._id});
 
@@ -147,10 +177,10 @@ const deleteCartItem = asyncHandler(async (req, res) => {
           return e.item ==  req.params.id;
      })
 
-     console.log(product[0].count)
+
      await productCollection.updateOne({_id:product[0].item},{$inc:{quantity:product[0].count}})
    
-     try {
+  
           let user = await cartCollection.updateOne(
                { user: req.session.user._id },
                {
@@ -160,8 +190,9 @@ const deleteCartItem = asyncHandler(async (req, res) => {
 
           res.redirect("/cart/view-cart");
           const userId = req.session.user._id;
-          const proId = req.query.id;
-     } catch (error) {
+          const proId = req.query.id;}
+}
+      catch (error) {
           console.log(error.message);
           var err = new Error();
           error.statusCode = 400;
@@ -170,7 +201,7 @@ const deleteCartItem = asyncHandler(async (req, res) => {
      }
 })
 
-//change quantity
+//change quantity--------------------------------------------------------------------
 
 const changeQuantity = asyncHandler(async (req, res) => {
      try {
@@ -246,15 +277,17 @@ const changeQuantity = asyncHandler(async (req, res) => {
      }
 });
 
-//cart count
+//cart count-----------------------------------------------------------------------
 
 const cartCount = asyncHandler(async (req, res) => {
      try {
+         
           //fechting count of products
-          const cart = await cartCollection.find({ user: req.session.user._id });
+          const cart = await cartCollection.findOne({ user: req.session.user._id });
+   
           var cartCount;
-          if (cart[0].products) {
-               cartCount = cart[0].products.length;
+          if (cart.products) {
+               cartCount = cart.products.length;
           } else {
                cartCount = "";
           }
@@ -291,7 +324,7 @@ const cartCount = asyncHandler(async (req, res) => {
                     $group: {
                          _id: null,
                          total: { $sum: { $multiply: ["$count", "$product.price"] } },
-                         discount: { $sum: { $multiply: ["$count", "$product.discount"] } },
+                         discount: { $sum: { $multiply: ["$count", "$product.totalDiscount"] } },
                     },
                },
           ]);
@@ -309,7 +342,7 @@ const cartCount = asyncHandler(async (req, res) => {
           res.json({ count: cartCount, discount: discount, subTotal: subTotal, totalPrice: totalPrice });
      }
      catch(error){
-         res.json({err:error.message})
+    
          console.log(error.message);
          var err = new Error();
          error.statusCode = 400;
@@ -318,7 +351,7 @@ const cartCount = asyncHandler(async (req, res) => {
      }
 });
 
-//checkout page
+//checkout page----------------------------------------------------------------------
 
 const  checkoutControler = asyncHandler(async (req, res) => {
      
@@ -418,7 +451,7 @@ const  checkoutControler = asyncHandler(async (req, res) => {
                     $group: {
                          _id: null,
                          total: { $sum: { $multiply: ["$count", "$product.price"] } },
-                         discount: { $sum: { $multiply: ["$count", "$product.discount"] } },
+                         discount: { $sum: { $multiply: ["$count", "$product.totalDiscount"] } },
                     },
                },
           ]);
@@ -426,10 +459,12 @@ const  checkoutControler = asyncHandler(async (req, res) => {
          
           //finding coupons
 
-          const coupons = await couponCollection.aggregate([{$match:{minimumpurchase:{$lt:total}}}])
-          var coupon =coupons.filter((e)=>{
-               return !e.users.includes(req.session.user._id)
-          })
+          const coupon = await couponCollection.aggregate([{$match:{minimumpurchase:{$lt:total},isActive:true}},{$match:{
+               'users':{$not:{$elemMatch:{$eq:req.session.user._id}}}
+          }}])
+          console.log('coupon',coupon)
+    
+     
           
           
 
@@ -441,7 +476,8 @@ const  checkoutControler = asyncHandler(async (req, res) => {
          
      } 
      catch(error){
-          console.log(error.message);
+          console.log(error.message)
+       
           var err = new Error();
           error.statusCode = 500;
           next(err)
@@ -449,12 +485,15 @@ const  checkoutControler = asyncHandler(async (req, res) => {
      }
 });
 
-//checkout post controler
+//checkout post controler--------------------------------------------------------------------
 
 const checkoutPostControler = asyncHandler(async (req, res) => {
-     req.body.subTotal=parseInt(req.body.subTotal);
+     req.body.deliverycharge = parseInt(req.body.deliverycharge)
+     req.body.subtotal=parseInt(req.body.subtotal);
+     req.body.referaldiscount=parseInt(req.body.referaldiscount)
      req.body.discount=parseInt(req.body.discount);
      req.body.total = parseInt(req.body.total)
+     console.log(req.body)
      try{
 
    
@@ -529,6 +568,7 @@ const checkoutPostControler = asyncHandler(async (req, res) => {
 
      /// IF PAYMENT METHOD IS COD
      if (req.body.payment == "COD") {
+          req.body.discount = parseInt(req.body.discount)
         
           const orderObj = {
                user: req.session.user._id,
@@ -546,10 +586,15 @@ const checkoutPostControler = asyncHandler(async (req, res) => {
                total: req.body.total,
                subtotal: req.body.subtotal,
                discount: req.body.discount,
+               referalCode:req.body.referal,
+               referalDiscount:req.body.referaldiscount,
                couponId: "",
-               offers:req.body.offers,
+               deliveryCharge:req.body.deliverycharge,
+               
                products: cart,
                productsCount: product.products.length,
+               couponCode:req.body.couponcode,
+               coupon:req.body.coupon
           };
 
           await orderCollection.create(orderObj);
@@ -594,13 +639,20 @@ const checkoutPostControler = asyncHandler(async (req, res) => {
                     state: req.body.state,
                     zipcode: req.body.zipcode,
                },
+              
                payment: req.body.payment,
                total: req.body.total,
                subtotal: req.body.subtotal,
                discount: req.body.discount,
+               referalCode:req.body.referal,
+               referalDiscount:req.body.referaldiscount,
                couponId: "",
+               deliveryCharge:req.body.deliverycharge,
+               
                products: cart,
                productsCount: product.products.length,
+               couponCode:req.body.couponcode,
+               coupon:req.body.coupon
           };
           await orderCollection.create(orderObj);
           const orderData = await orderCollection.findOne(orderObj).lean();
@@ -633,13 +685,11 @@ const checkoutPostControler = asyncHandler(async (req, res) => {
      }}
      catch(error){
           console.log(error.message);
-          var err = new Error();
-          error.statusCode = 500;
-          next(err)
+       
      }
 });
 
-//checkout change addresss
+//checkout change addresss---------------------------------------------------------------------
 
 const checkoutChangeAddress = asyncHandler(async (req, res) => {
      try{
@@ -656,7 +706,7 @@ const checkoutChangeAddress = asyncHandler(async (req, res) => {
      }
 });
 
-//razorpay
+//razorpay-----------------------------------------------------------------------------
 
 const razorPayControler = asyncHandler(async (req, res) => {
      try{
@@ -696,7 +746,7 @@ catch(error){
 }
 });
 
-//order success
+//order success---------------------------------------------------------------------
 
 const OrderSuccess = asyncHandler(async(req,res)=>{
      try{
@@ -744,7 +794,7 @@ const addressExistsControler = asyncHandler(async(req,res)=>{
      }
 })
 
-//singleProduct purchase controler
+//singleProduct purchase controler----------------------------------------------------------------
 
 const singleProduct = asyncHandler(async(req,res)=>{
  try {

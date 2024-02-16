@@ -7,7 +7,7 @@ const accountShema = new mongoose.Schema({
     email:String,
     secondaryphonenumber:String,
     phonenumber:Number,
-    country:String,
+    country:{type:String,default:'India'},
     state:String,
     pincode:String,
     image:{type:String,default:''}

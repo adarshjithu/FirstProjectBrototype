@@ -6,65 +6,57 @@ const productCollection = require("../models/productModel");
 const { body } = require("express-validator");
 const bcrypt = require("bcrypt");
 const cartCollection = require("../models/cartModel");
+const bannerCollection = require("../models/bannerModel")
 
-//landin controler
+//landin controler--------------------------------------------------------------------
 const landingControler = (req, res) => {
      res.redirect("/user_home");
 };
 
-//signupControler
+//signupControler------------------------------------------------------------------
 
-const signupControler = asyncHandler( (req, res) => {
-     try{
-
-          if (req.session.user) {
-               res.redirect("/user_home");
-          } else {
-               res.render("user/signup");
-          }
-     }
-     catch(error){
+const signupControler = asyncHandler((req, res) => {
+     try {
+        
+          
+               res.render("OTP/signup");
+          
+     } catch (error) {
           console.log(error.message);
           res.status(500);
           var err = new Error();
           error.statusCode = 500;
-          error.message = 'Error While Signup'
-          next(err)
-
-}
-})
-//loginControler
+          error.message = "Error While Signup";
+          next(err);
+     }
+});
+//loginControler-----------------------------------------------------------------------------------
 const loginControler = asyncHandler(async (req, res, next) => {
-     try{
-
+     try {
           if (req.session.user) {
                res.redirect("/user_home");
           } else {
                res.render("user/login");
           }
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
           res.status(500);
           var err = new Error();
           error.statusCode = 500;
-       
-          next(err) 
+
+          next(err);
      }
-}
-)
-//loginpost controler
+});
+//loginpost controler----------------------------------------------------------------------------
 
 const loginPostControler = asyncHandler(async (req, res) => {
-     try{
-
-          
+     try {
           const user = await UserCollection.findOne({ email: req.body.email });
-          
+
           if (user && (await user.isPasswordMatched(req.body.password))) {
                if (user.isActive == true) {
                     req.session.user = user;
-                    
+
                     res.redirect("/user_home");
                } else {
                     res.render("user/login", { isActive: true });
@@ -72,16 +64,13 @@ const loginPostControler = asyncHandler(async (req, res) => {
           } else {
                res.render("user/login", { logginError: true });
           }
-     }
-     catch(error){
-     }
-})
+     } catch (error) {}
+});
 
-//homeControler
+//homeControler------------------------------------------------------------------------------------
 const homeControler = asyncHandler(async (req, res, next) => {
-
-     try{
-
+     try {
+          const banner = await bannerCollection.findOne({}).lean(); 
           const category = await categoryCollection.find({}).lean();
           products = await productCollection.find({}).lean().limit(8);
           let cartCount = await cartCollection.findOne({ user: req.session.user._id });
@@ -91,56 +80,50 @@ const homeControler = asyncHandler(async (req, res, next) => {
           } else {
                count = null;
           }
-     
+
           var USER;
           if (req.session.user) {
                USER = req.session.user.username;
           } else {
                USER = "";
           }
-     
-          res.render("user/home", { home: true, user: USER, category, products, count: count });
-     }
-     catch(error){
+
+          res.render("user/home", { home: true, user: USER, category, products, count: count,banner });
+     } catch (error) {
           console.log(error.message);
           res.status(500);
           var err = new Error();
           error.statusCode = 500;
-          next(err)
+          next(err);
      }
 });
 
-//contactControler
+//contactControler--------------------------------------------------------------------------------
 const contactControler = (req, res) => {
-     try{
-
+     try {
           res.render("user/contact", { home: true });
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
           res.status(500);
           var err = new Error();
-          
-          next(err)
 
+          next(err);
      }
 };
 
-//aboutControler
+//aboutControler-----------------------------------------------------------------------------------
 const aboutControler = (req, res) => {
-     try{
-
+     try {
           res.render("user/about", { home: true });
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
           res.status(500);
           var err = new Error();
-          
-          next(err)
+
+          next(err);
      }
 };
-//siguppostcontroler
+//siguppostcontroler-------------------------------------------------------------------------
 const signupPostControler = asyncHandler(async (req, res) => {
      try {
           const user = await UserCollection.findOne({ email: req.body.email });
@@ -153,94 +136,84 @@ const signupPostControler = asyncHandler(async (req, res) => {
           }
      } catch (error) {
           console.log(error.message);
-        
+
           var err = new Error();
           error.statusCode = 400;
-          next(err)
+          next(err);
      }
 });
 
-//otp controler
+//otp controler----------------------------------------------------------------------------------
 const otpControler = (req, res) => {
-     try{
-
+     try {
           generateOTP(req.session.user.email).then((OTP) => {
                req.session.otp = OTP;
-               
+
                res.redirect("/user_generate");
           });
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
-         
+
           var err = new Error();
           error.statusCode = 400;
-          next(err)
+          next(err);
      }
-}
+};
 
-//Generate otp
-const OTPgeneration = asyncHandler( (req, res) => {
-     try{
-
+//Generate otp----------------------------------------------------------------------------------
+const OTPgeneration = asyncHandler((req, res) => {
+     try {
           res.render("OTP/otp", { ph: req.session.user.email });
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
-        
+
           var err = new Error();
           error.statusCode = 400;
-          next(err)
+          next(err);
      }
 });
-//otp post controler 
+//otp post controler-----------------------------------------------------------------------------
 
 const otpPostControler = asyncHandler(async (req, res) => {
-     try{
+     try {
           if (req.body.otp == req.session.otp) {
                const userObj = await UserCollection.create(req.session.user);
                console.log("userobject" + userObj);
                req.session.user = userObj;
-     
+
                res.redirect("/user_home");
           } else {
                res.redirect("/user_otpError");
           }
-
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
-    
+
           var err = new Error();
           error.statusCode = 400;
-          next(err)
+          next(err);
      }
-     
-     
 });
 
-//otp error
+//otp error--------------------------------------------------------------------------------------
 const otpError = (req, res) => {
-     try{
-
+     try {
           res.render("OTP/otpErr");
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
-        
+
           var err = new Error();
           error.statusCode = 400;
-          next(err) 
+          next(err);
      }
 };
 
-//user reset password
+//user reset password-------------------------------------------------------------------------------------
 
 const userResetPassword = async (req, res) => {
      res.render("user/reset-password", { email: req.session.user.email });
 };
 
-//user reset password post
+//user reset password post-------------------------------------------------------------------------------
 const userResetPasswordPost = async (req, res) => {
      const userFound = await UserCollection.findOne({ email: req.body.email });
 
@@ -252,7 +225,7 @@ const userResetPasswordPost = async (req, res) => {
           res.render("user/usernot-found");
      }
 };
-//pasword reset succuss
+//pasword reset succuss-------------------------------------------------------------------------
 
 const passwordResetSuccessPost = asyncHandler(async (req, res) => {
      const email = req.session.resetEmail;
@@ -269,26 +242,26 @@ const passwordResetSuccessPost = asyncHandler(async (req, res) => {
      }
 });
 
-//userprofile
+//userprofile------------------------------------------------------------------------------------------
 
 const userProfile = async (req, res) => {
      res.render("user/profile", { home: true });
 };
 
-///logout controler
+///logout controler--------------------------------------------------------------------------------
 
 const logout = (req, res) => {
-     req.session.user = null;
+     req.session.destroy();
      res.redirect("user_home");
 };
 
-////forgot password
+////forgot password----------------------------------------------------------------------------------
 
 const forgotPassword = (req, res) => {
      res.render("user/forgot-password");
 };
 
-//forgotpassword post controler
+//forgotpassword post controler---------------------------------------------------------------------
 
 const forgotPasswordPost = asyncHandler(async (req, res) => {
      try {
@@ -309,7 +282,7 @@ const forgotPasswordPost = asyncHandler(async (req, res) => {
      }
 });
 
-//forgot password generate otp
+//forgot password generate otp-----------------------------------------------------------------
 
 const forgotPasswordGenerateOtp = asyncHandler(async (req, res) => {
      generateOTP(req.session.forgotPasswordEmail).then((OTP) => {
@@ -318,7 +291,7 @@ const forgotPasswordGenerateOtp = asyncHandler(async (req, res) => {
      });
 });
 
-//forgot password checkotp
+//forgot password checkotp------------------------------------------------------------------
 
 const forgotPasswordCheckOtp = asyncHandler(async (req, res) => {
      try {
@@ -327,7 +300,7 @@ const forgotPasswordCheckOtp = asyncHandler(async (req, res) => {
           throw new Error(error.message);
      }
 });
-//FORGOT PASSWORD CHECK OTP POST
+//FORGOT PASSWORD CHECK OTP POST-----------------------------------------------------------
 
 const forgotPasswordCheckOtpPost = asyncHandler(async (req, res) => {
      try {
@@ -343,23 +316,17 @@ const forgotPasswordCheckOtpPost = asyncHandler(async (req, res) => {
      }
 });
 
-///user view products
+///user view products---------------------------------------------------------------------------
 
 const userViewProducts = asyncHandler(async (req, res) => {
-   
-      try{
-
-      
-     
-   
-
+     try {
           if (!req.session.page) {
                req.session.page = 1;
           }
           const page = req.session.page;
-          
+
           //pagination
-          
+
           ////////////////////////////
           var products;
           var count;
@@ -369,7 +336,7 @@ const userViewProducts = asyncHandler(async (req, res) => {
           } else {
                count = null;
           }
-          
+
           const pro = await productCollection.find({}).lean();
           var productLength = pro.length;
           let pages = [1];
@@ -380,7 +347,7 @@ const userViewProducts = asyncHandler(async (req, res) => {
                     pages.push(inc);
                }
           }
-          
+
           products = await productCollection.find({}).skip(req.session.skip).limit(8).lean();
           const category = await categoryCollection.find({}).lean();
           if (products) {
@@ -393,19 +360,17 @@ const userViewProducts = asyncHandler(async (req, res) => {
                     pages,
                     page,
                });
-          
-     }}
-     catch(error){
+          }
+     } catch (error) {
           console.log(error.message);
-          
+
           var err = new Error();
           error.statusCode = 500;
-          next(err)
+          next(err);
      }
-   
 });
 
-//product details page
+//product details page--------------------------------------------------------------------------
 const productDetails = asyncHandler(async (req, res) => {
      const product = await productCollection.findOne({ _id: req.query.id }).lean();
      const products = await productCollection.find({}).lean().limit(2);
@@ -415,30 +380,28 @@ const productDetails = asyncHandler(async (req, res) => {
      const image4 = product.subImage[3];
      const image5 = product.subImage[4];
 
-     res.render("user/product-details", { product, products, image1, image2, image3, image4, image5 });
+     res.render("user/product-details", { product, products, image1, image2, image3, image4, image5, user: true });
 });
 
-//changeProductCategory
+//changeProductCategory---------------------------------------------------------------------
 
 const changeProductCategory = asyncHandler(async (req, res) => {
-     try{
-
+     try {
           const category = await categoryCollection.find({}).lean();
           const products = await productCollection.find({ category: req.params.id }).lean();
-     
+
           req.session.products = products;
           req.session.category = category;
-     
+
           if (products) {
                res.redirect("/changed");
           }
-     }
-     catch(error){
+     } catch (error) {
           console.log(error.message);
           res.status(500);
           var err = new Error();
           error.statusCode = 500;
-          next(err)
+          next(err);
      }
      // console.log(req.params.id)
 
@@ -451,25 +414,114 @@ const changeProductCategory = asyncHandler(async (req, res) => {
      // }
 });
 
-const changed =asyncHandler( (req, res) => {
-     try{
-
+const changed = asyncHandler((req, res) => {
+     try {
           const category = req.session.category;
           const products = req.session.products;
           res.render("user/view-products", { home: true, products, category });
-     }catch(error){
+     } catch (error) {
           console.log(error.message);
-        
+
           var err = new Error();
           error.statusCode = 500;
-          next(err)
+          next(err);
      }
 });
 
 const blog = (req, res) => {
      res.render("user/blog", { home: true });
 };
-/////////////////////////
+/////////////////////////---------------------------------------------------------------------
+
+const filterProduct = asyncHandler(async (req, res) => {
+     try {
+          if (req.session.search) {
+               let productData = await productCollection
+                    .find({
+                         $or: [
+                              { name: { $regex: ".*" + req.body.search + ".*", $options: "i" } },
+                              { category: { $regex: ".*" + req.body.search + ".*", $options: "i" } },
+                         ],
+                    })
+                    .skip(req.session.skip)
+                    .limit(8)
+                    .lean();
+               var productLength = products.length;
+               var page = [1];
+
+               for (i = 1; i < productLength; i++) {
+                    if (i % 8 == 0) {
+                         inc++;
+                         pages.push(inc);
+                    }
+               }
+          }
+          if (req.session.filter) {
+          
+
+          const cat = await categoryCollection.find({}).lean();
+          const sort = parseInt(req.body.sort);
+
+          let products = [];
+
+          const product = await productCollection
+               .find({ category: { $in: req.body.category } })
+               .sort({ price: sort })
+               .lean();
+
+          req.body.category.forEach((e) => {
+               var value = 0;
+               product.forEach((ele) => {
+                    if (e == ele.category) {
+                         if (ele.price > value) {
+                              value = ele.price;
+                         }
+                    }
+               });
+
+               let percentage = (value * parseInt(req.body.price)) / 100;
+
+               product.forEach((val) => {
+                    if (val.category == e) {
+                         if (val.price > percentage) {
+                              products.push(val);
+                         }
+                    }
+               });
+          });
+          //product finding
+          if (!req.session.page) {
+               req.session.page = 1;
+          }
+          const page = req.session.page;
+          ////////////
+          var count;
+          let cartCount = await cartCollection.findOne({ user: req.session.user._id });
+          if (cartCount) {
+               count = cartCount.products.length;
+          } else {
+               count = null;
+          }
+          //////////////////
+
+          var productLength = products.length;
+          let pages = [1];
+          let inc = 1;
+          for (i = 1; i < productLength; i++) {
+               if (i % 8 == 0) {
+                    inc++;
+                    pages.push(inc);
+               }
+          }
+     }
+          const category = await categoryCollection.find({}).lean();
+          if (products) {
+               res.render("coupon/products", { products, category, user: req.session.user._id, count: count, user: true, pages, page });
+          }
+     } catch (err) {
+          throw new error(err.message);
+     }
+});
 
 module.exports = {
      landingControler,
@@ -499,4 +551,5 @@ module.exports = {
      changeProductCategory,
      changed,
      blog,
+     filterProduct,
 };

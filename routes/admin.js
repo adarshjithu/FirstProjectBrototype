@@ -1,7 +1,8 @@
 const express = require('express');
-const {adminHome, adminLogin, adminLoginPost, adminLogout, adminCustomers, adminViewProducts, adminBlockUser, adminAddProduct, adminAddProductPost, adminDeleteProduct, adminViewProductCategoryVise, adminEditProduct, adminEditProductPost, changeImage, adminAddCategory, adminAddCategoryPost, adminViewCategory, deleteCategory, editCategory, editCategoryPost, editCategoryImage, categoryChartControler, ChangeSalesChart} = require('../Controler/adminControler');
+const {adminHome, adminLogin, adminLoginPost, adminLogout, adminCustomers, adminViewProducts, adminBlockUser, adminAddProduct, adminAddProductPost, adminDeleteProduct, adminViewProductCategoryVise, adminEditProduct, adminEditProductPost, changeImage, adminAddCategory, adminAddCategoryPost, adminViewCategory, deleteCategory, editCategory, editCategoryPost, editCategoryImage, categoryChartControler, ChangeSalesChart, adminOfferControler, bannerControler, bannerControlerPost, deleteBanner} = require('../Controler/adminControler');
 const { verifyAdmin, adminValidationLoginRules, adminLoginValidationRes } = require('../middlewares/middleware');
-const { upload } = require('../config');
+
+const {upload} =  require("../config")
 const app = express.Router();
 app.get('/',verifyAdmin,adminHome); 
 app.get('/login',adminLogin); 
@@ -31,7 +32,11 @@ app.get("/check",(req,res)=>{
 })
 
 app.get('/category-chart',categoryChartControler);
-app.get("/changeSalesChart",ChangeSalesChart)
+app.get("/changeSalesChart",ChangeSalesChart);
+app.get("/offers",adminOfferControler);
+app.get("/banner",bannerControler)
+app.post("/banner",upload.single('image'),bannerControlerPost);
+app.get("/bannerDelete",deleteBanner)
 
 
   

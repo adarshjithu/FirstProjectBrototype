@@ -1,6 +1,17 @@
 const { check, validationResult, body } = require("express-validator");
 var nodemailer = require('nodemailer');
 const adminCollection  = require("../models/adminModel")
+const userCollection  = require("../models/userModel");
+const addressCollection  = require("../models/addressModel");
+const cartCollection  = require("../models/cartModel");
+const accountCollection  = require("../models/accountModel");
+const walletCollection  = require("../models/walletModel");
+const wishlistCollection  = require("../models/wishlistModel");
+const orderCollection  = require("../models/orderModel");
+const expressAsyncHandler = require("express-async-handler");
+const path = require("path");
+const fs = require("fs")
+const sharp  = require('sharp')
 ////validationmiddlewares signup
 const validationRules = [
      body("username")
@@ -118,7 +129,7 @@ const generateOTP =(email)=>{
             service: 'gmail',
             auth: {
               user: 'adarshjithu10@gmail.com',
-              pass: 'tecw wysm eyjm cmgi'
+              pass: 'dgio pvan gxrq indb'
             }
           });
           
@@ -160,11 +171,32 @@ const createAdmin = async(user,e,pass)=>{
 
 }
 
+
 //verify login
 
-const  verifyLogin =(req,res,next)=>{
+const  verifyLogin =async(req,res,next)=>{
      if(req.session.user){
-          next()
+          const user = await userCollection.findById({_id:req.session.user._id})
+   
+         
+          if(user){
+
+               next()
+          }
+          else{
+               await addressCollection.deleteMany({user:req.session.user._id})
+               await cartCollection.deleteOne({user:req.session.user._id});
+               await accountCollection.deleteOne({user:req.session.user._id});
+               await walletCollection.deleteOne({user:req.session.user._id});
+               await wishlistCollection.deleteOne({user:req.session.user._id});
+               await orderCollection.deleteMany({user:req.session.user._id});
+               req.session.destroy()
+               res.render("user/login",{landing:true}) 
+          }
+           
+          
+
+         
      }
      else{
           res.render("user/login",{landing:true})
@@ -260,8 +292,81 @@ const resetPasswordValidationResult =(req,res,next)=>{
 
 
 
+const cropImageMultiple = async (req, res, next) => {
+     try {
+       await Promise.all(
+         req.files.map(async (file) => {
+          console.log(file.filename)
+           try {
+             let sharpInstance = sharp(file.path);
+   
+             await sharpInstance
+               .resize({width:500, height:500})
+               .jpeg({ quality: 100 })
+               .toFile(`public/images/products/${file.filename}`);
+   
+             sharpInstance.destroy(); 
+   
+             await fs.promises.unlink(file.path);
+          
+           } catch (error) {
+             console.error(`Error processing image ${file.filename}: ${error.message}`);
+           }
+         })
+       );
+     } catch (error) {
+       console.error(`Error in productImgResize: ${error.message}`);
+     }
+   
+next();
+};
+
+//referal code email sending
+
+const createReferal =(email,code)=>{
+
+     return new Promise((resolve,reject)=>{
+
+
+       
+
+
+          var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'adarshjithu10@gmail.com',
+              pass: 'dgio pvan gxrq indb'
+            }
+          });
+          
+          var mailOptions = {
+            from: 'adarshjithu10@gmail.com',
+            to: email,
+            subject: 'Referal Bonus DIGITYX',
+            text: `Your Friend ${email} Refered You With His ReferalCode: ${code}
+            YOU CAN USE THIS CODE TO GET 10% OF FOR THE FIRSTIME PURCHASE`
+          }; 
+          
+          transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              console.log(error);
+            } else {
+              console.log('success')
+              console.log('Email sent: ' + info.response);
+              resolve( random);
+            }
+          });
+          
+
+     })
+
+
+
+}
+
+
 
 
 module.exports = { validationRules, validationRes ,generateOTP,validationLoginRules,loginValidationRes,createAdmin,
 verifyLogin,verifyAdmin,adminLoginValidationRes,adminValidationLoginRules,
-resetPasswordValidationRules,resetPasswordValidationResult};
+resetPasswordValidationRules,resetPasswordValidationResult,cropImageMultiple,createReferal};

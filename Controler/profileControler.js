@@ -4,7 +4,7 @@ const AccountCollection = require('../models/accountModel');
 const walletCollection = require("../models/walletModel")
 
 
-//profile address
+//profile address------------------------------------------------------------------
 const profileAddressControler = asyncHandler(async (req, res) => {
      try {
           const address = await AddressCollection.find({ user: req.session.user._id }).lean();
@@ -16,7 +16,7 @@ const profileAddressControler = asyncHandler(async (req, res) => {
           next(err)
      }
 });
-//address post
+//address post---------------------------------------------------------------------------
 
 const profileAddressPostControler = asyncHandler(async (req, res) => {
      try {
@@ -37,7 +37,7 @@ const profileAddressPostControler = asyncHandler(async (req, res) => {
      }
 });
 
-//delete address
+//delete address-----------------------------------------------------------------------------
 
 const deleteAddress = asyncHandler(async (req, res) => {
      try {
@@ -51,7 +51,7 @@ const deleteAddress = asyncHandler(async (req, res) => {
      }
 });
 
-//edit address
+//edit address----------------------------------------------------------------------------------
 
 const editAddress = asyncHandler(async (req, res) => {
      try {
@@ -80,7 +80,7 @@ const editAddress = asyncHandler(async (req, res) => {
      }
 });
 
-//edit address post controler
+//edit address post controler----------------------------------------------------------------
 
 const editAddressPost = asyncHandler(async (req, res) => {
    try{
@@ -99,7 +99,7 @@ const editAddressPost = asyncHandler(async (req, res) => {
    }
 });
 
-//account details
+//account details------------------------------------------------------------------------------
 const accountDetails = asyncHandler(async(req,res)=>{
      try{
 
@@ -117,7 +117,7 @@ const accountDetails = asyncHandler(async(req,res)=>{
 
 })
 
-//account details post
+//account details post------------------------------------------------------------------------------
 
 const accountDetailsPost = asyncHandler(async(req,res)=>{
      try{
@@ -147,7 +147,7 @@ const accountDetailsPost = asyncHandler(async(req,res)=>{
 
 })
 
-//profile change image
+//profile change image--------------------------------------------------------------------------------------------
 
 const profileChangeImage = asyncHandler(async(req,res)=>{
    await AccountCollection.updateOne({user:req.session.user._id},{$set:{image:req.file.filename}})
@@ -155,21 +155,42 @@ const profileChangeImage = asyncHandler(async(req,res)=>{
 })
 
 
-//profile icon
+//profile icon---------------------------------------------------------------------------------
 
 const profileIconControler = asyncHandler(async(req,res)=>{
- 
-   const profile =await  AccountCollection.findOne({user:req.session.user._id})
 
-   res.json({image:profile.image})
+     const profile =await  AccountCollection.findOne({user:req.session.user._id})
+  if(profile==null){
+     res.json({image:false,success:false})
+  }   
+  else{
+
+  
+ 
+   if(profile){
+
+   
+   
+   if(profile.image){
+
+        res.json({image:profile.image,success:true})
+   }
+   else{
+     
+     res.json(
+      {image:false,success:false}
+     )
+   }}}
+
+   
 })
 
 //coupon
 
-// wallet
+// wallet----------------------------------------------------------------------------
 const walletControler = asyncHandler(async(req,res)=>{
-    const wallet =  await walletCollection.findOne({user:req.session.user._id}).lean();
-    console.log(wallet)
+    const wallet =  await walletCollection.findOne({user:req.session.user._id}).sort({"_id":1}).lean();
+    let trans = wallet.transactions.reverse();
     var amount;
     if(wallet){
 
@@ -178,7 +199,7 @@ const walletControler = asyncHandler(async(req,res)=>{
      else{
           amount=0
      }
-     res.render("profile/wallet",{home:true,amount,wallet})
+     res.render("profile/wallet",{home:true,amount,wallet,trans})
 })
 module.exports = { profileAddressControler, profileAddressPostControler, deleteAddress, editAddress,editAddressPost,accountDetails
 ,accountDetailsPost ,profileChangeImage,profileIconControler,walletControler};

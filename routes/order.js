@@ -1,6 +1,6 @@
 const express = require('express');
 const {verifyLogin}= require("../middlewares/middleware");
-const { adminViewOrder, adminDeleteOrder, userOrderHistory, userOrderDetails, userOrderCancel, userOrderConfirm, adminEditOrder, changeOrderStatus, userOrderCancelSelectPayment, cancelConfirmControler, orderReturnReasonControler, orderReturnTypeSelection, userOrderReturnTypepost } = require('../Controler/orderControler');
+const { adminViewOrder, adminDeleteOrder, userOrderHistory, userOrderDetails, userOrderCancel, userOrderConfirm, adminEditOrder, changeOrderStatus, userOrderCancelSelectPayment, cancelConfirmControler, orderReturnReasonControler, orderReturnTypeSelection, userOrderReturnTypepost, orderInvoiceControler } = require('../Controler/orderControler');
 const {verifyAdmin} = require('../middlewares/middleware')
 const app = express.Router();
 
@@ -27,6 +27,8 @@ app.post("/user-order-cancel-confirm",verifyLogin,cancelConfirmControler);
 app.get("/return-reason",verifyLogin,orderReturnReasonControler);
 
 app.get("/user-order-return-type",verifyLogin,orderReturnTypeSelection)
-app.post("/user-order-return-type",verifyLogin,userOrderReturnTypepost)
+app.post("/user-order-return-type",verifyLogin,userOrderReturnTypepost);
+
+app.get("/invoice",orderInvoiceControler)
 
 module.exports = app;

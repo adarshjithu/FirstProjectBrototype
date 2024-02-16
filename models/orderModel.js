@@ -8,6 +8,11 @@ const orderSchema = new mongoose.Schema({
     discount:Number,
     couponId:String,
     offers:Number,
+    couponCode:String,
+    coupon:String,
+    referalCode:String,
+    referalDiscount:Number,
+    deliveryCharge:Number,
     products:Array,
     orderedAt:{type:String,default:function(){
         return new Date().toDateString()

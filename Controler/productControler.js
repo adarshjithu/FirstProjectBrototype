@@ -30,7 +30,7 @@ const productsearchControler = asyncHandler(async (req, res) => {
               
             
          
-            products =await productCollection.find({name:{$regex:req.body.search,$options:'i'}}).skip(req.session.skip).limit(8).lean()
+            products =await productCollection.find({$or:[{name:{$regex:'.*'+req.body.search+'.*',$options:'i'}},{category:{$regex:'.*'+req.body.search+'.*',$options:'i'}}]}).skip(req.session.skip).limit(8).lean()
                  var productLength = products.length;
                  let pages = [1]
             let inc =1;
@@ -58,7 +58,7 @@ const productsearchControler = asyncHandler(async (req, res) => {
      }
 });
 
-//product category
+//product category--------------------------------------------------------------------------------
 const productCategory = asyncHandler(async (req, res) => {
      req.session.category = req.query.id;
   
@@ -113,7 +113,7 @@ const productCategory = asyncHandler(async (req, res) => {
      }
 });
 
-//all products 
+//all products -----------------------------------------------------------------------------------------
 const allProducts = (req, res) => {
      try {
           req.session.category = null;
@@ -147,7 +147,7 @@ const subImageControler = asyncHandler(async (req, res) => {
      }
 });
 
-//add sub image
+//add sub image----------------------------------------------------------------------------
 
 const addSubImage = asyncHandler(async (req, res) => {
      try {
@@ -160,7 +160,7 @@ const addSubImage = asyncHandler(async (req, res) => {
      }
 });
 
-//price filter
+//price filter-----------------------------------------------------------------------------
 
 const priceFilter = asyncHandler(async (req, res) => {
      try{
@@ -208,7 +208,7 @@ catch(error){
 }
 });
 
-//wishlist
+//wishlist----------------------------------------------------------------------------------
 
 const wishList = asyncHandler(async (req, res) => {
      try{
@@ -248,7 +248,7 @@ const wishList = asyncHandler(async (req, res) => {
      }
     
 }); 
-//add to wishlist
+//add to wishlist-----------------------------------------------------------------------
 
 const addtoWishlist = asyncHandler(async (req, res) => {
      try{
@@ -261,8 +261,8 @@ const addtoWishlist = asyncHandler(async (req, res) => {
           const productExist = wishlist.products.includes(proId);
           if (!productExist) {
                await wishlistCollection.updateOne({ user: user }, { $push: { products: proId } });
-               const wishlistCount= await wishlistCollection.find({user:user});
-                const count = wishlistCount[0].products.length
+               const wishlistCount= await wishlistCollection.findOne({user:user});
+                const count = wishlistCount.products.length
                res.json({count:count})
           }
      } else {
@@ -282,11 +282,17 @@ const addtoWishlist = asyncHandler(async (req, res) => {
 });
 
 
-//remove wishlist products
+//remove wishlist products-----------------------------------------------------------------
 
 
 const removeWishlistProduct = asyncHandler (async (req,res) => {
      try{
+           
+          const wishlist = await wishlistCollection.findOne({user:req.session.user._id});
+          if(wishlist.products.length<=1){
+               await wishlistCollection.deleteOne({user:req.session.user._id});
+               res.redirect('/products/wishlist')
+          }
 
           const proId = req.query.id;
      
@@ -304,14 +310,22 @@ const removeWishlistProduct = asyncHandler (async (req,res) => {
      }
 })
 
-//wishlist count
+//wishlist count-----------------------------------------------------------------------------
 
 const wishListCount = asyncHandler(async(req,res)=>{
      try{
-
-          const wishlist = await wishlistCollection.find({user:req.session.user});
+          var wishListCount
+          
+          const wishlist = await wishlistCollection.findOne({user:req.session.user._id});
+          console.log(wishlist)
              
-          const wishListCount = wishlist[0].products.length
+          if(wishlist){
+
+               wishListCount = wishlist.products.length;
+          }
+          else{
+               wishListCount  = 0;
+          }
           res.json({wishlist:wishListCount})
      }
      catch(error){
@@ -324,7 +338,7 @@ const wishListCount = asyncHandler(async(req,res)=>{
 
 })
 
-//change page
+//change page----------------------------------------------------------------------------------------
 
 const changePage = asyncHandler(async(req,res)=>{
      try{
@@ -345,7 +359,7 @@ catch(error){
     
 })
 
-//next page
+//next page----------------------------------------------------------------------------------------
 
 const nextPage = asyncHandler(async(req,res)=>{
      try{
@@ -365,7 +379,7 @@ const nextPage = asyncHandler(async(req,res)=>{
 }) 
 
 
-//total products
+//total products-------------------------------------------------------------------------------
 
 const totalProducts = asyncHandler(async(req,res)=>{
      const products = await productCollection.find({})
@@ -429,7 +443,7 @@ const productsSort = asyncHandler(async(req,res)=>{
    
 })
 
-//products filter
+//products filter--------------------------------------------------------------------------------
 
 const productsFilter = asyncHandler(async(req,res)=>{
     
@@ -499,7 +513,7 @@ const productsFilter = asyncHandler(async(req,res)=>{
   
 })
 
-//const deleteImage 
+//const deleteImage ----------------------------------------------------------------------------
 
 const deleteImage = asyncHandler(async(req,res)=>{
      if(req.query.type=='main'){
@@ -523,7 +537,7 @@ const deleteImage = asyncHandler(async(req,res)=>{
     
 })
 
-//unlist
+//unlist---------------------------------------------------------------------------------
 
 
 const unlistControler = asyncHandler(async(req,res)=>{

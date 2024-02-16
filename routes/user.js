@@ -1,5 +1,5 @@
 const express = require("express");
-const { landingControler, signupControler, contactControler, aboutControler, homeControler, loginControler, signupPostControler, otpControler, otpPostControler, loginPostControler, OTPgeneration, otpError, userResetPassword, userResetPasswordPost, resetPasswordUserfound, passwordResetSuccessPost, userProfile, logout, forgotPassword, forgotPasswordPost, forgotPasswordGenerateOtp, forgotPasswordCheckOtp, forgotPasswordCheckOtpPost, userViewProducts, productDetails, changeProductCategory, changed, blog } = require("../Controler/userControler");
+const { landingControler, signupControler, contactControler, aboutControler, homeControler, loginControler, signupPostControler, otpControler, otpPostControler, loginPostControler, OTPgeneration, otpError, userResetPassword, userResetPasswordPost, resetPasswordUserfound, passwordResetSuccessPost, userProfile, logout, forgotPassword, forgotPasswordPost, forgotPasswordGenerateOtp, forgotPasswordCheckOtp, forgotPasswordCheckOtpPost, userViewProducts, productDetails, changeProductCategory, changed, blog, filterProduct } = require("../Controler/userControler");
 const { validationRules, validationRes, otpAuthMiddleware, validationLoginRules, loginValidationRes, verifyLogin, resetPasswordValidationResult, resetPasswordValidationRules, createAdmin } = require("../middlewares/middleware");
 
 const app = express.Router();
@@ -51,7 +51,7 @@ verifyLogin
 ,userViewProducts) ;
 app.get("/user-product-details",verifyLogin,productDetails);
 app.get('/change/:id',verifyLogin,changeProductCategory);
-app.get('/changed',verifyLogin,changed)
-  
+app.get('/changed',verifyLogin,changed);
+app.get('/filterProduct',filterProduct);
 
 module.exports = app; 

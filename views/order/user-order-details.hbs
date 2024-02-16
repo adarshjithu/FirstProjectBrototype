@@ -1,4 +1,5 @@
 
+
 <style>
   .hh-grayBox {
 	background-color: #F8F8F8;
@@ -169,16 +170,21 @@
   }
 
   .track{
+
    
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: white;
   }
   .track .tick{
     display: flex;
     justify-content: center;
     align-items: center;
     height: 30px;
+  }
+  td{
+   
   }
    @media only screen and  (max-width:750px){
     ul li a span{
@@ -241,15 +247,15 @@
                 <div class="content">
 
                     <!-- Start Content-->
-                    <div class="container-fluid">
+                    <div class="" style="padding: 10px;">
 
                   
 
                    
-                            <div  style="width: 100%;display: flex;padding: 30px;justify-content: space-between;">
+                            <div class="row"  style="width: 100%;display: flex;padding: 10px;justify-content: space-between;">
         
                  
-                        <div  style="width: 100%;height: 50%;display: flex;flex-direction: column;" >
+                        <div  style="width: 100%;height: 50%;display: flex;flex-direction: column;" class="col-xl-10 col-lg-12" >
 
                         
 
@@ -287,7 +293,7 @@
                            </div>
 
 
-                           <div class="track" style="display: flex;justify-content: flex-start;">
+                           <div class="track" style="display: flex;justify-content: flex-start;width: ;">
                             <div class=" tick tick4" style="display: flex;justify-content: center;align-items: center;"> &nbsp;</div>
               
                            </div>
@@ -333,8 +339,12 @@
 
 
                         </div>
-
-{{!-- tracking --}}
+                      
+{{!-- tracking --}}    <div class="col-xl-2 col-lg-12" style="display: flex;">
+                          
+                          <div>
+                            <a href="/order/invoice"  style="color: red;background-color: red;color: white;margin-right: 5px;font-weight: 600;" class="btn"> INVOICE</a>
+                          </div>
                        <div class="cancel">
                         {{#if delivered}}
                         <a href="/order/return-reason?id={{orderData._id}}" class="btn btn-success">RETURN</a>
@@ -346,11 +356,12 @@
                         <a class="btn btn-primary" style="color: white;"> HELP?</a>
                         {{else}}
                         
-                        <a class="btn btn-danger" href="/order/user-order-cancel?id={{orderData._id}}"   onclick="return confirm('Are you sure want to cancel Order : {{orderData._id}}')">CANCEL</a>
+                        <a class="btn" style="background-color: red;color: white;" href="/order/user-order-cancel?id={{orderData._id}}"   onclick="return confirm('Are you sure want to cancel Order : {{orderData._id}}')">CANCEL</a>
                         {{/if}}
                         {{/if}}
                         
                        </div>
+                          </div>
                                
                             </div>
                        
@@ -360,7 +371,7 @@
                         
                         <div class="row">
                             <div class="col-lg-8">
-                                <div class="card" style="box-shadow: 1px 1px 10px grey;margin-bottom: 20px;">
+                                <div class="card" style="border: 1px solid rgb(185, 172, 172);margin-bottom: 20px;">
                                     <div class="card-body">
                                         <h6 class="header-title mb-3">Items from Order {{orderData._id}}</h6>
             
@@ -394,7 +405,7 @@
                             </div> <!-- end col -->
         
                             <div class="col-lg-4">
-                                <div class="card" style="box-shadow: 1px 1px 10px grey;">
+                                <div class="card" style="border: 1px solid rgb(180, 171, 171);">
                                     <div class="card-body">
                                         <h4 class="header-title mb-3">ORDER SUMMERY</h4>
             
@@ -411,9 +422,26 @@
                                                     <td>Sub Total :</td>
                                                     <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>&nbsp;{{orderData.subtotal}}</td>
                                                 </tr>
+                                             
                                                 <tr>
-                                                    <td>Shipping Charge :</td>
-                                                    <td>0</td>
+                                                    <td>CouponId :</td>
+                                                    <td>{{orderData.couponCode}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>CouponDiscount :</td>
+                                                    <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>{{orderData.coupon}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>ReferalCode :</td>
+                                                    <td>{{orderData.referalCode}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>referalDiscount :</td>
+                                                    <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>{{orderData.referalDiscount}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Shipping :</td>
+                                                    <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>{{orderData.deliveryCharge}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Discount : </td>
@@ -437,7 +465,7 @@
         
                         <div class="row">
                             <div class="col-lg-4">
-                                <div class="card" style="box-shadow: 1px 1px 10px grey;">
+                                <div class="card" style="border: 1px solid grey;">
                                     <div class="card-body">
                                         <h4 class="header-title mb-3">SHIPPING INFORMATION</h4>
 
@@ -446,7 +474,7 @@
                                         <address class="mb-0 font-14 address-lg">
                                             {{orderData.address.address}} &nbsp;{{orderData.address.zipcode}}<br>
                                             {{orderData.address.state}}&nbsp;,&nbsp;{{orderData.address.country}} <br>
-                                            <abbr title="Phone">P:&nbsp;</abbr>(+91){{orderData.address.phonenumber}} <br/>
+                                       PH :   (+91){{orderData.address.phonenumber}} 
                                          
                                         </address>
             
@@ -455,7 +483,7 @@
                             </div> <!-- end col -->
         
                             <div class="col-lg-4">
-                                <div class="card" style="box-shadow: 1px 1px 1px grey;">
+                                <div class="card" style="border: 1px solid grey;">
                                     <div class="card-body">
                                         <h4 class="header-title mb-3">BILLING INFORMATION</h4>
 

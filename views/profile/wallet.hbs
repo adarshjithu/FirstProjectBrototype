@@ -152,6 +152,10 @@ span{
                 <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
                 <span>Coupons</span>
                 </a></li>
+                <li><a href="/offer/user-offers">
+                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
+                <span>Offers</span>
+                </a></li>
             <li><a href="/user_logout">
                 <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2023 Fonticons, Inc.--><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"/></svg>
                 <span>Logout</span>
@@ -183,34 +187,38 @@ span{
 
         </div>
       {{!-- /////////// --}}
-         <div  class="row" style="width: 100%;background-color: white;box-shadow: 1px 1px 10px grey; border-radius: 5px;margin-top: 50px;">
-               <div style="width: 100%;background-color: white;display: flex;justify-content: center;align-items: center;height: 50px;">
+      
 
-              <h6>TRANSACTION DETAILS</h6>
-               </div>
+     <div class="col-xl-12" style="margin-top: 30px;">
+
+ <table class="table" id="myTable" style="width: 100%;background-color: white;box-shadow: 1px 1px 10px black;">
+  <thead>
+    <tr>
+      <th scope="col" style="display: flex;align-items: center;justify-content: center;" >Index</th>
+      <th scope="col">Id</th>
+      <th scope="col">Description</th>
+      <th scope="col">Date</th>
+      <th scope="col">Amount</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each trans}}
+    <tr>
+    
+      <td style="display: flex;justify-content: center;align-items: center;">{{@index}}</td>
+      <td>{{this.transactionId}}</td>
+      <td>{{this.description}}</td>
+      <td>{{this.date}}</td>
+      <td>{{this.amount}}</td>
+    </tr>
+    {{/each}}
+
+
+  </tbody>
+</table>
+     </div>    
          
-               <div style="width: 100%;background-color: #D6D9DC;display: flex;justify-content: center;align-items: center;height: 50px;">
-                      
-
-                   
-                      <div style="width: 25%;display:flex;justify-content: center;align-items: center;"><span> ID</span></div>
-                      <div style="width: 25%;display:flex;justify-content: center;align-items: center;"><span>DESCRIPTION</span></div>
-                      <div style="width: 25%; display:flex;justify-content: center;align-items: center;">DATE</div>
-                      <div style="width: 25%; display:flex;justify-content: center;align-items: center;">AMOUNT</div>
-               </div>
-               {{#each wallet.transactions}}
-               <div style="width: 100%;background-color: white;display: flex;justify-content: center;align-items: center;height: 50px;">
-                      
-
-                   
-                      <div style="width: 25%;display:flex;justify-content: center;align-items: center;"><span> {{this.transactionId}}</span></div>
-                      <div style="width: 25%;display:flex;justify-content: center;align-items: center;"><span>{{this.description}}</span></div>
-                      <div style="width: 25%; display:flex;justify-content: center;align-items: center;font-weight: 600;">{{this.date}}</div>
-                      <div style="width: 25%; display:flex;justify-content: center;align-items: center;font-weight: 600;" >&#8377;{{this.amount}}</div>
-               </div>
-         {{/each}}
-         
-         </div>
+    
  {{!-- ///////////// --}}
     </div>
 <input type="text" name="" id="" class="sidebar" value="wallet" style="display: none;">
@@ -226,4 +234,17 @@ span{
 
 
 
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.slim.min.js" integrity="sha512-sNylduh9fqpYUK5OYXWcBleGzbZInWj8yCJAU57r1dpSK9tP2ghf/SRYCMj+KsslFkCOt3TvJrX2AV/Gc3wOqA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+<!-- Your custom script using DataTable with a capital "D" -->
+<script>
+  $(document).ready(function() {
+
+    $('#myTable').DataTable();
+    responsive:true;
+  });
 </script>

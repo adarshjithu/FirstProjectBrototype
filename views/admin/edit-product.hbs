@@ -274,8 +274,7 @@ margin: 20px;
     <div class="logo">
       <a style="color: white;" href="#"></a>
       <div class="search_box">
-        {{!-- <input type="text" placeholder="Search EasyPay">
-        <i class="fa-sharp fa-solid fa-magnifying-glass"></i> --}}
+        <a class="navbar-brand" href="index.html" style="color: rgb(38, 35, 35);font-size: 30px;font-weight: 600;margin-bottom: 20px;margin-left: 30px;"><svg xmlns="http://www.w3.org/2000/svg" height="24" width="30" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#f51505" d="M128 32C92.7 32 64 60.7 64 96V352h64V96H512V352h64V96c0-35.3-28.7-64-64-64H128zM19.2 384C8.6 384 0 392.6 0 403.2C0 445.6 34.4 480 76.8 480H563.2c42.4 0 76.8-34.4 76.8-76.8c0-10.6-8.6-19.2-19.2-19.2H19.2z"/></svg>Digite <span style="color: red;">X</span></a>
       </div>
     </div>
 
@@ -325,152 +324,134 @@ margin: 20px;
 
 <div class="customerDetails row">
 
-<div class="row customerHeader " >
-
-            <div class="col-lg-3 col-xl-4 col-sm-12">
+       <div style="display: flex;justify-content: space-between;align-items: center;">
+          <h4> EDIT PRODUCTS</h4>
+                 <a href="/admin/view_products" class="btn" style="color: white;background-color: red;margin-bottom: 20px;margin-right: 20px;"> All Products
+                  </a>
+            
+        </div>
+        
+        {{!-- form --}}
+       <div>
    
+    <form id="form" action="/admin/edit-product?id={{products._id}}"   method="post" style="background-color: white;">
+      <div class="row" style="border: 1px solid rgb(165, 151, 151);border-radius: 5px;background-color: white;box-shadow: 1px 1px 10px grey;margin-top: 20px;height: 100%;">
 
-          <h2> EDIT PRODUCTS</h2>
-                </div>
-     
-  <div class="col-lg-6 col-xl-4 col-sm-6">
-   
+                  <div class=" col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
+                     <label for="" >Product Name</label><br>
+                     <span class="text-danger" id="nameError"></span> <br>
+                     
+                     <input class="inpu" id="name" type="text" " name="name" required value="{{products.name}}"> 
+                  </div>
 
-
-  </div>
-     
-              <div class="col-lg-3 col-xl-3 col-sm-6" style="display: flex; justify-content: center; align-items: center;">
-   
-               <a href="/admin/view_products" class="btn" style="color: white;background-color: red;"> All Products
-                      </a>
-  </div>
-     
-  
-
-
-
-
-</div>
-<hr>
-
-
-
-<div class="customerBody  row">
-   
-
-  {{!-- form --}}
-
-      
-    <form action="/admin/edit-product?id={{products._id}}"  method="post" id="form" style="border: 1px solid rgb(156, 146, 146);border-radius: 5px;" >
-      <div class="form row" style="">
-        <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
-                  <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
-                     <label class="label" for="">Product Name</label>
+                  <div class=" col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
+                    <label for="">Price</label><br>
+                    <span class="text-danger" id="priceError"></span><br>
+                    <input id="price" type="number" " class="inpu" required name="price" value="{{products.price}}">
+                  </div>
+                  
+                   <div class=" col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
+                     <label for="" >Description</label>
                      <br>
-                     <span class="text-danger" id="nameError"></span>
-                     <input  id="name" type="text" class="inp" " name="name" required value="{{products.name}}">
-                  </div>
-         
-                  
-         
-                  <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
-                    <label for="">Price</label>
-                             <br>
-                     <span class="text-danger" id="priceError"></span>
-                    <input id="price" class="inp" type="number" " required name="price" value="{{products.price}}">
-                  </div>
-
-                   <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
-                     <label for="">Description</label>
-                              <br>
-                     <span class="text-danger" id="descriptionError"></span>
-                     <input id="description" class="inp" type="text" " required name="description" value="{{products.description}}">
+                     <span id="descriptionError" class="text-danger"></span>
+                     <input class="inpu" type="text" " required name="description" value="{{products.description}}">
                    </div>
-
-
-                     <div class="division" style="display: flex; flex-direction: row; ;">
-
                   
+                 <div class="col-lg-6 col-sm-12 col-xl-6">
+                     
+                      <label>category</label><br>
+                     <select name="category" style="width: 100%;height: 50px;border-radius: 5px;" class="inpu" >
+                      <option value="{{products.category}}">{{products.category}}</option>
+                      {{#each category}}
+                      <option value="{{this.category}}">{{this.category}}</option>
+                     {{/each}}
+                   
+                     </select>
+              
+
+                       </div>
 
 
-
-
-                   <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
                     
-                      <label for="">Quantity</label><br>
+                       <div class="col-lg-4 col-sm-12 col-xl-4">
+
+                      <label for=""">Quantity</label>
                 
-                       <input class="inp" value="{{products.quantity}}" type="number" name="" required id="quantity" onchange="changequantity()" style="width: 100px; margin-top: 25px; height: 50px;">
+                       <input class="inpu" value="{{products.quantity}}" type="number"  name="quantity" required id="quantity" onchange="changequantity()" style="">
                        <br><span class="text-danger" id="quantityError"></span>
-                   </div>
+                  
+                       </div>
 
-
-
-
-
-
-                   <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
-                    
-                      <label for="" >Status</label><br>
-                     <select class="inp" name="" id="status" onchange="changestatus()"  style="width: 100px; margin-top: 20px; height: 50px; ">
-                      <option value="">{{products.status}}</option>
+                       {{!-- //status --}}
+                             <div class="col-lg-4 col-sm-12 col-xl-4">
+                     
+                      <label>Status</label><br>
+                     <select name="status" class="inpu"  style="width: 100%;height: 50px;" v >
+                      <option value="{{products.status}}">{{products.status}}</option>
                       <option value="Published">Published</option>
                       <option value="Low of stock">Low of stock</option>
                       <option value="Out of stock">Out of stock</option>
                       <option value="Draft">Draft</option>
                      </select>
-                   </div>
-                   <div class="right col-md-6 col-lg-6 col-sm-12 col-xl-6 ">
+              
+
+                       </div>
+
+                       <div class="col-lg-4 col-sm-12 col-xl-4">
+
                      <label for="" ">Discount</label><br>
-                      <input class="inp" value="{{products.discount}}" id="discount" type="number" style="width: 100px; margin-top: 20px; height: 50px; " name="discount">
-                   </div>
-                     </div>
-       </div>
-    
-     <div class="middle col-md-6 col-lg-2 col-sm-6 col-xl-2 col-xs-6 " style="z-index: 0; height: 50px;" >
+                     <span id="discountError" class="text-danger"></span>
+                      <input class="inpu"  id="discount" value="{{products.discount}}" type="number"  name="discount" style="width: 100%;margin-top: 0px;">
+                       </div>
 
-  
-
-    </div>
-
-
-
-     <div class="left col-md-6 col-lg-4 col-sm-6 col-xl-4">
-
-            <div class="dropdown " >
-            <button class="dropbtn" id="select-category">{{products.category}}</button>
-
-        <div class="dropdown-content">
-         <span style="margin-left: 20px;cursor: pointer;" onclick="category('mobile')">Mobile</span><br><hr>
-         <span style="margin-left: 20px;cursor: pointer;" onclick="category('laptop')">Mobile</span><br><hr>
-         <span style="margin-left: 20px;cursor: pointer;" onclick="category('gadget')">Mobile</span><br><hr>
-       </div>
-        
-
+                       {{!-- offers --}}
+                                <div class="col-lg-6 col-sm-12 col-xl-6">
                      
+                      <label>Select Offer</label><br>
+                     <select name="offerType" style="width: 100%;height: 50px;" >
+                      <option value="{{products.offerType}}">{{products.offerType}}</option>
+                      <option value="seasonSale">Season Sale</option>
+                   
+                     </select>
+              
+
+                       </div>
+
+
+                       
+                                <div class="col-lg-6 col-sm-12 col-xl-6">
+                     
+                      <label>Offer Discount</label><br>
+                     <select name="offerDiscount" style="width: 100%;height: 50px;border-radius: 5px;" class="inpu" >
+                      <option value="{{products.offerDiscount}}">{{products.offerDiscount}}</option>
+                      <option value="10">10%</option>
+                      <option value="20">20%</option>
+                      <option value="30">30%</option>
+                      <option value="40">40%</option>
+                      <option value="50">50%</option>
+                      <option value="60">60%</option>
+                      <option value="70">70%</option>
+                      <option value="80">80%</option>
+                   
+                     </select>
+                 </div>
+  
+           <input  type="text" style="display: none;" value="" name="status" id="stat" >
+           <input type="number" style="display: none;" value="" name="quantity" id="quant">
+           <input type="text" style="display: none;" value="" name="category" id="category">
+    <button style="width: 200px;background-color: red;color: white;margin-bottom: 20px;"  type="submit" class="btn">Submit</button>
+
         </div>
-        
-           <input type="text" style="visibility: hidden;" value="" name="{{products.status}}" id="stat" >
-           <input type="number" style="visibility: hidden;" value="{{products.quantity}}" name="quantity" id="quant" >
-           <input type="text" style="visibility: hidden;" value="{{products.category}}" name="category" id="category">
+        </form>
+         </div>
+         {{!-- form --}}
 
 
-      </div>
-     <button  style="width: 200px;color: white;background-color: red;margin-bottom: 20px;"  type="submit" class="btn">UPDATE</button>
+                 <div style="display: flex;justify-content: space-between;" class="row">
+         {{!-- {{form image}} --}}
+         <div class="col-md-12 col-xl-4">
 
-      </div>
-
-
-    </form>
-
-
-   {{!-- form --}}
-       <input type="text" value="{{products._id}}" name="" id="proId" style="display: none;">
-       <input type="text" value="{{user._id}}" name="" id="userId" style="display: none;">
-        <div class="row" style="display: flex; justify-content: space-between;">
-
-       <div class="col-md-12 col-xl-4">
-
-      <form  action="/admin/change-image?id={{products._id}}" enctype="multipart/form-data" method="post"  style="border: 1px solid grey; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px;background-color: white;" >
+      <form  action="/admin/change-image?id={{products._id}}" enctype="multipart/form-data" method="post"  style="box-shadow: 1px 1px 5px black; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px;background-color: white;" >
          <input type="text" value="{{products._id}}" id="productId" style="display: none;">
 
           <span>Main Image</span>
@@ -480,7 +461,7 @@ margin: 20px;
 
            <img  id="img" style="width: 100px; height: 100px; margin-top: 30px;" src="/assets/products/{{products.image}}" alt="" >
 
-          <a  style="cursor: pointer;" onclick="deleteImage('{{products.image}}','main')">
+          <a  style="cursor: pointer;" onclick="deleteImage('{{products.image}}','main')"> 
 
           <svg  xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#fe0134" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
           </a>
@@ -495,16 +476,15 @@ margin: 20px;
            </form>
           
        </div> 
-
-           {{!-- subimages --}}
-
- <div class="col-md-12 col-xl-6">
-      <form  action="/products/subimage?id={{products._id}}" enctype="multipart/form-data" method="post"  style="border: 1px solid black; margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;border-radius: 10px;background-color: white;" >
+         {{!-- {{form image}} --}}
+         {{!-- {{form image}} --}}
+         <div class="col-md-12 col-xl-6">
+      <form  action="/products/subimage?id={{products._id}}" enctype="multipart/form-data" method="post"  style=" margin-top: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;border-radius: 10px;background-color: white;box-shadow: 1px 1px 5px black;" >
           <span>Sub Image</span>
           <div style="width: 100%;display: flex;justify-content: space-around;margin-top: 20px;">
 
            {{#each products.subImage}}
-          <div style="width: 15%;border: 1px solid red;height: 50%;">
+          <div style="width: 15%;box-shadow: 1px 1px 5px black;height: 75px;">
                  <a style="cursor: pointer;margin-left: 70%;margin-bottom: 10px;margin-top: 10px;" onclick="deleteImage('{{this}}','sub')">
 
           <svg  xmlns="http://www.w3.org/2000/svg" height="20" width="17.5" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path fill="#fe0134" d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
@@ -522,6 +502,62 @@ margin: 20px;
            </div>
            </form>
            </div>
+         {{!-- {{form image}} --}}
+                   
+
+
+                 </div>
+
+               
+               
+               
+               
+               
+               
+                </div>
+                  
+         
+
+                  
+
+
+    
+                 
+                
+
+
+
+
+                    
+
+
+
+
+    
+
+      
+                   
+                     </div>
+ 
+    
+
+    
+
+
+
+   
+{{!-- \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ --}}
+
+   {{!-- form --}}
+       <input type="text" value="{{products._id}}" name="" id="proId" style="display: none;">
+       <input type="text" value="{{user._id}}" name="" id="userId" style="display: none;">
+        <div class="row" style="display: flex; justify-content: space-between;">
+
+       
+
+           {{!-- subimages --}}
+
+ 
         </div> 
 
 
@@ -649,3 +685,23 @@ var proId = document.getElementById("productId").value;
   
 </script>
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

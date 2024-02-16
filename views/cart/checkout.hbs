@@ -46,9 +46,9 @@
       <div class="py-5 text-center">
         
 
-      <div class="row" style="">
+      <div class="row" style="display: flex;justify-content: space-evenly;">
          {{!-- cartDetails --}}
-        <div class="col-md-4 order-md-2 mb-4" style="margin-left: 100px;border-radius: 5px;">
+        <div class="col-md-4 order-md-2 mb-4" style=";border-radius: 5px;">
           <h4 class="d-flex justify-content-between align-items-center mb-3" style="box-shadow: 1px 1px 10px grey;">
          
     
@@ -71,8 +71,16 @@
               <span id="discount">123</span>
             </li>
             <li class="list-group-item d-flex justify-content-between">
-              <span>Offers</span>
+              <span>Coupons</span>
               <span id="offer">0</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Referal Bonus</span>
+              <span id="ref">0</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between">
+              <span>Delivery Charge</span>
+              <span id="deliveryCharge">0</span>
             </li>
             <li class="list-group-item d-flex justify-content-between">
               <span >Sub Total</span>
@@ -89,7 +97,7 @@
   
 
           
-          <div class="coupons" style="box-shadow: 1px 1px 10px grey;">
+          <div class="coupons" style="box-shadow: 1px 1px 5px black;">
            
           
           <div style="width: 100%;margin-top: 20px;">
@@ -100,19 +108,24 @@
                    
               {{#each coupon}}
               <li style="border: 1px solid #f7464f;display: flex;justify-content: space-around;margin-top: 10px;" id="{{this._id}}">
-                <img src="/assets/products/{{this.image}}" style="width: 25px;height: 25px;" alt="">
-                <span>{{this.couponname}}</span>
+                
+                <span id="coup">{{this.couponcode}}</span>
                 <span>{{this.discount}}% discount</span>
              
              
 
-                <button id="{{this._id}}" class="btn btn-primary" onclick="applyCoupon('{{this._id}}','{{this.couponcode}}','{{this.discount}}')">Apply</button>
+                <button id="{{this._id}}" class="btn" onclick="applyCoupon('{{this._id}}','{{this.couponcode}}','{{this.discount}}')" style="background-color: white;color: red;border: 1px solid red;margin: 10px 0px 10px 0px;">Apply</button>
                 
               </li>
               {{/each}}
             </ul>
           </div>
           </div>
+             <div style="width: 100%;display: flex;justify-content: space-between;margin-top: 20px;">
+              <input  placeholder="Enter Referal Code" type="text" name="" id="referalcode" style="width: 300px;border-radius: 5px;border: none;height: 50px;box-shadow: 1px 1px 5px black;">
+              <button onclick="addReferal()" class="btn" style="background-color: red;color: white;">APPLY </button>
+
+             </div>
 
           
         </div>
@@ -216,7 +229,7 @@
               <div class="col-md-6 mb-3">
                 <label for="firstName">Email </label> 
                   {{!-- firstname --}}
-                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="email"  id="email" placeholder="" value="{{address.email}}" required name="email">
+                <input style="border: 1px solid #f7464f;border-radius: 10px;" type="email"  id="email" placeholder="" value="{{address.email}}"  name="email">
                 <span id="emailErr" style="font-weight: 600;color: red;"></span>
                  {{!-- firstname --}}
                 <div class="invalid-feedback">
@@ -309,9 +322,11 @@
              <div  class=" my-3" style="display: flex;">
 
                    
+                  <div id="cashOnDelivery">
 
                    <input type="radio" name="payment" id="cod" onclick="changePayment()" value="COD"  style="height:25px;width: 25px;margin-left: 20px;background-color: red;" checked  >
                    <label for="" style="margin-left: 10px;">Cash On Delivery</label>
+                  </div>
                    
                
             
@@ -331,8 +346,12 @@
 
            
             <hr class="mb-4">
+            <input type="number" name="deliverycharge" id="del" style="display: none;">
+            <input type="text" name="couponcode" id="couponcode" style="display: none;" >
+            <input type="text" value="0" id="referalbonus" name="referaldiscount" style="display: none;">
+            <input type="text" name="referal" id="referal" style="display: none;">
             <input type="number"  name="total" id="t" value="" style="display: none;">
-            <input type="number" id="of" value="" style="display: none;" name="offers">
+            <input type="number" id="coupon" value="" style="display: none;" name="coupon">
             <input type="number" name="subtotal" id="s" value="" style="display: none;">
             <input type="number" name="discount" id="d" value="" style="display: none;">
             <button class="btn btn-lg btn-block" type="submit" style="background-color: red;color: white;font-weight: 600;"> PLACE ORDER </button>
@@ -345,6 +364,9 @@
 
    
     </div>
+    <script>
+     
+    </script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -389,10 +411,18 @@
             document.getElementById("s").value = data.subTotal
             document.getElementById("discount").innerHTML = data.discount
             document.getElementById("d").value = data.discount
+                          let delivery =Math.floor(Math.random()*100);
+  document.getElementById("deliveryCharge").innerHTML =delivery
+            document.getElementById("total").innerHTML = data.totalPrice+delivery;
+            document.getElementById('t').value = data.totalPrice+delivery
+            document.getElementById("del").value = delivery
+            if(data.totalPrice<2000){
+
+              document.getElementById("cashOnDelivery").style.display='none'
+            }
             
-            document.getElementById("total").innerHTML = data.totalPrice
-            document.getElementById('t').value = data.totalPrice
-            console.log(data)
+     
+         
 
             
          })
@@ -438,6 +468,8 @@ function change(e){
   })
 }
 
+
+
 </script>
 
 <script>
@@ -448,16 +480,20 @@ function change(e){
 
 <script>
   function applyCoupon(couponId,couponCode,discount){
+
     var userId = document.querySelector(".userId").innerHTML;
     const total = document.getElementById("total").innerHTML;
-    var discountPrice = (total*10)/100;
+  
+
+    var dis = (total*discount)/100;
+    var discountPrice = Math.floor(dis)
     console.log(couponId,userId,couponCode,discount);
-document.getElementById('t').value-=parseInt( discountPrice)
+document.getElementById('t').value=parseInt(total)-parseInt( discountPrice)
 document.getElementById("offer").innerHTML=parseInt(document.getElementById("offer").innerHTML)+parseInt(discountPrice)
-document.getElementById("of").value=parseInt(document.getElementById("offer").innerHTML)+parseInt(discountPrice)
-      
+document.getElementById("coupon").value=discountPrice
     alert(`YOU WON ${discountPrice} DISCOUNT`)
           document.getElementById("total").innerHTML=total-discountPrice
+          document.getElementById("couponcode").value = couponCode
           
           document.getElementById(`${couponId}`).style.display='none'
        
@@ -476,6 +512,7 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
 </script>
 
 <script>
+
   const addressError = document.getElementById("addressError").value
   console.log(addressError)
 
@@ -500,54 +537,64 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
      const phoneNumberErr = document.getElementById("phonenumberErr")
      const zipcode = document.getElementById("zipcode").value;
      const zipcodeErr = document.getElementById("zipcodeErr")
-     console.log(/\d/.test(Lastname))
-     console.log(Lastname)
+
+     console.log(email)
      //firtname
       if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(firstName)==true){
+        document.getElementById("addr").classList.remove('shows')
         e.preventDefault()
         firstNameErr.innerHTML = 'Special Charector not Allowed'
       }
      if(/\d/.test(firstName)==true){
+      document.getElementById("addr").classList.remove('shows')
     e.preventDefault()
      firstNameErr.innerHTML='Valid Firstname Is Required'
 
      }
      if(firstName===""){
+      document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      firstNameErr.innerHTML='Firstname Is Required'
      }
      
    
       else if (firstName.length<=2&&firstName!==''){
+        document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      firstNameErr.innerHTML='Firstname Should be Above 2 Letters'
      }
      if(firstName.length>12){
+      document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      firstNameErr.innerHTML='Firstname Should be below 12 Letters'
      } 
      //lastname
        if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(Lastname)==true){
+        document.getElementById("addr").classList.remove('shows')
         e.preventDefault()
         LastnameErr.innerHTML = 'Special Charector not Allowed'
       }
      
      if(/\d/.test(Lastname)==true){
+      document.getElementById("addr").classList.remove('shows')
     e.preventDefault()
      LastnameErr.innerHTML='Valid Lastname Is Required'
 
      }
      if(Lastname.length<=2){
+      document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      LastnameErr.innerHTML='Lastname Should be Above 2 Letters'
      }else{
          LastnameErr.innerHTML=''
      }
      if(Lastname.length>12){
+      document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      LastnameErr.innerHTML='Lastname Should be below 12 Letters'
      }
      if(Lastname==''){
+      document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      LastnameErr.innerHTML='Lastname Is Required'
      }
@@ -555,17 +602,21 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
      //address
  
          if(/\d/.test(address)==true){
+          document.getElementById("addr").classList.remove('shows')
     e.preventDefault()
      addressErr.innerHTML='Valid Address Required'
 
      }
        if(address.length<=15){
+        document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
      addressErr.innerHTML='address Should be Above 15 Letters'
      }
 
     //email
       if(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)==false){
+        console.log('email. ceer')
+        document.getElementById("addr").classList.remove('shows')
     e.preventDefault()
      emailErr.innerHTML='Valid Email Required'
 
@@ -574,10 +625,13 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
   //phonenumber
 
         if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(phonenumber)==true){
+          document.getElementById("addr").classList.remove('shows')
         e.preventDefault()
+
         phoneNumberErr.innerHTML = 'Special Charector not Allowed'
       }
       if(phonenumber.length!==10){
+        document.getElementById("addr").classList.remove('shows')
         e.preventDefault();
         phoneNumberErr.innerHTML='10 numbers Required'
       }
@@ -586,6 +640,7 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
       }
       
    if(/^\d+$/.test(phonenumber)!==true){
+        document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
         phoneNumberErr.innerHTML = 'Invalid Value'
       }
@@ -595,6 +650,7 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
     
         //zipcode
    if(/[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(zipcode)==true){
+    document.getElementById("addr").classList.remove('shows')
         e.preventDefault()
         zipcodeErr.innerHTML = 'Special Charector not Allowed'
       }
@@ -603,6 +659,7 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
       } 
 
       if(/^\d+$/.test(zipcode)!==true){
+        document.getElementById("addr").classList.remove('shows')
           e.preventDefault()
         zipcodeErr.innerHTML = 'Invalid Value'
       }
@@ -643,6 +700,26 @@ document.getElementById("of").value=parseInt(document.getElementById("offer").in
   }
 })
 </script>
+
+<script>
+  function addReferal(){
+      const total = document.getElementById("total").innerHTML;
+      console.log(total)
+    const id   = document.getElementById("referalcode").value;
+     fetch(`http://localhost:3000/offer/applyReferal?id=${id}&&total=${total}`).then((result)=>{
+      return result.json()
+     }).then((data)=>{
+      console.log(data)
+      document.getElementById("total").innerHTML=parseInt(total-data.amount)
+      document.getElementById("t").value=parseInt(total-data.amount)
+      document.getElementById("referalbonus").value=data.amount
+      document.getElementById("ref").innerHTML=data.amount
+      document.getElementById("referal").value = id;
+     })
+
+  }
+</script>
+
 
 
 

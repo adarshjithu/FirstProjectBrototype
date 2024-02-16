@@ -1,0 +1,92 @@
+<style>
+
+     body{ background:#eee; } .bgWhite{ background:white; box-shadow:0px 3px 6px 0px #cacaca; } .title{ font-weight:600; margin-top:20px;
+     font-size:24px } .customBtn{ border-radius:0px; padding:10px; } form input{ display:inline-block; width:50px; height:50px; text-align:center; }
+</style>
+<div class="container">
+
+     <div class="row justify-content-md-center">
+          <div class="col-md-4 text-center">
+               <div class="row">
+                    <div class="col-sm-12 mt-5 bgWhite">
+                         <div class="title">
+                              <h1 id="timer"></h1>
+                              Verify OTP
+                         </div>
+
+                         <form action="" class="mt-5">
+                              <input type="text" name="" id="otp" style="width: 100%;font-size: 25px;" />
+                              <span id="otpErr" class="text-danger"></span>
+                         </form>
+                         <hr class="mt-4" />
+                         <button class="btn btn-success btn-block mt-4 mb-4 customBtn" onclick="verifyOtp()">Verify</button>
+                         <button class="btn btn-primary btn-block mt-4 mb-4 customBtn" onclick="resendOtp()">Resend</button>
+                    </div>
+               </div>
+          </div>
+     </div>
+</div>
+
+<script>
+     console.log({{{date}}}) 
+     const details = {{{date}}}
+     const position = details.position;
+
+      const date = details.date; 
+      //creating timer using setInterval var clear = setInterval(()=>{ },1000)
+let clear =  setInterval(()=>{
+    //creating timer
+    let count = Math.floor((Date.now()-date)/1000);
+    let timer = 30 - count;
+    document.getElementById("timer").innerHTML = timer
+    if(timer<=0){
+        clearInterval(clear)
+document.getElementById("timer").innerHTML = '0'
+    }
+
+      },1000)
+
+///verify otp ------------------------------
+      function verifyOtp(){
+            //entered otp
+             let otp = document.getElementById("otp").value;
+       
+            //checking timer become zero
+             if(timer.innerHTML<=0){
+                document.getElementById('otpErr').innerHTML = 'Entered OTP Is Expired'
+             }
+             //timer morethan zero
+             else{
+                //sending otp and its position for checking otp
+            fetch(`http://localhost:3000/user/otp/verifyOtp?position=${position}&&otp=${otp}`).then((data)=>{
+        return data.json()
+    }).then((result)=>{
+        //check result of otp
+        console.log(result)
+        if(result.success==true){
+
+            if(result.user){
+            location.href = '/user_signup',
+            alert("accout created")}
+            else{
+
+                 location.href = '/user_home',
+            alert("accout created")
+ 
+            }
+        }
+        else{
+           document.getElementById("otpErr").innerHTML = 'Invalid OTP'  
+        }
+    })
+             }
+      }
+//resend otp--------------------------------------
+function resendOtp(){
+fetch(`http://localhost:3000/user/otp/resend?position=${position}`).then((data)=>{
+    return data.json()
+}).then((result)=>{
+    location.reload()
+})
+}
+</script>

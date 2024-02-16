@@ -1,18 +1,13 @@
 const mongoose = require("mongoose");
 const couponSchama = new mongoose.Schema({
      minimumpurchase: Number,
-     status: { type: String, default: "Active" },
-     couponname: String,
+     isActive: { type:Boolean,default:true},
+     
      discount: Number,
-     image: String,
-     startdate: { type: String },
+ 
+     startdate: String,
      expirydate: String,
-     couponcode: {
-          type: Number,
-          default: function () {
-               return Math.floor(Math.random() * 10000000) + 1;
-          },
-     },
+     couponcode: String,
 
      createdAt: {
           type: String,

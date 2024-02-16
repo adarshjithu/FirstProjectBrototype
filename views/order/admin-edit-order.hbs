@@ -202,6 +202,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: white;
   }
    @media only screen and  (max-width:750px){
    . a h6{
@@ -420,7 +421,7 @@
                         <div class="row">
                             <div class="col-lg-8">
                                 <div class="card">
-                                    <div class="card-body"style="box-shadow: 1px 1px 10px grey;" >
+                                    <div class="card-body" style="border: 1px solid grey;" >
                                         <h6 class="header-title mb-3">Items from Order {{orderData._id}}</h6>
             
                                         <div class="table-responsive">
@@ -453,7 +454,7 @@
                             </div> <!-- end col -->
         
                             <div class="col-lg-4" >
-                                <div class="card" style="box-shadow: 1px 1px 10px grey;">
+                                <div class="card" style="border: 1px solid grey;">
                                     <div class="card-body" style="box-shadow: 1px 1px 10px grey;">
                                         <h4 class="header-title mb-3">ORDER SUMMERY</h4>
             
@@ -471,8 +472,24 @@
                                                     <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>&nbsp;{{orderData.subtotal}}</td>
                                                 </tr>
                                                 <tr>
+                                                    <td>CouponId</td>
+                                                    <td>{{orderData.couponCode}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Coupon Discount :</td>
+                                                    <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>&nbsp;{{orderData.coupon}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>ReferalCode  :</td>
+                                                    <td>{{orderData.referalCode}}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Referal Discount :</td>
+                                                    <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>&nbsp;{{orderData.referalDiscount}}</td>
+                                                </tr>
+                                                <tr>
                                                     <td>Shipping Charge :</td>
-                                                    <td>0</td>
+                                                    <td><svg xmlns="http://www.w3.org/2000/svg" height="16" width="10" viewBox="0 0 320 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M0 64C0 46.3 14.3 32 32 32H96h16H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H231.8c9.6 14.4 16.7 30.6 20.7 48H288c17.7 0 32 14.3 32 32s-14.3 32-32 32H252.4c-13.2 58.3-61.9 103.2-122.2 110.9L274.6 422c14.4 10.3 17.7 30.3 7.4 44.6s-30.3 17.7-44.6 7.4L13.4 314C2.1 306-2.7 291.5 1.5 278.2S18.1 256 32 256h80c32.8 0 61-19.7 73.3-48H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H185.3C173 115.7 144.8 96 112 96H96 32C14.3 96 0 81.7 0 64z"/></svg>{{orderData.deliveryCharge}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Discount : </td>
@@ -497,7 +514,7 @@
                         <div class="row">
                             <div class="col-lg-4">
                                 <div class="card">
-                                    <div class="card-body"style="box-shadow: 1px 1px 10px grey;">
+                                    <div class="card-body" style="border: 1px solid grey;">
                                         <h5 class="header-title mb-3">SHIPPING INFORMATION</h5>
 
                                         <h5>{{orderData.address.firstname}}</h5>
@@ -513,7 +530,7 @@
                                 </div>
                             </div> <!-- end col -->
         
-                            <div class="col-lg-4" style="box-shadow: 1px 1px 10px grey;">
+                            <div class="col-lg-4" style="border: 1px solid grey;">
                                 <div class="card">
                                     <div class="card-body">
                                         <h5 class="header-title mb-3">BILLING INFORMATION</h5>
@@ -531,7 +548,7 @@
                             </div> <!-- end col -->
         
                             <div class="col-lg-4">
-                                <div class="card" style="box-shadow: 1px 1px 10px grey;margin-top: 10px;">
+                                <div class="card" style="border: 1px solid grey;margin-top: 10px;">
                                     <div class="card-body">
                                         <h5 class="header-title mb-3">DELIVERY INFO</h5>
             
