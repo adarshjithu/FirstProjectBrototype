@@ -14,6 +14,8 @@ const bannerCollection = require("../models/bannerModel");
 const paymentCollection = require("../models/paymentModel");
 const userCollection = require("../models/userModel");
 const { convertArrayToCSV } = require("convert-array-to-csv");
+const { report } = require("../report");
+
 
 const adminHome = asyncHandler(async (req, res) => {
      let orders = await orderCollection.find({}).limit(5).lean();
@@ -1275,39 +1277,116 @@ const customSalesReport = asyncHandler(async (req, res) => {
 });
 
 //download sales report pf ------------------------------------------------------------------
-
+const reports = async(allData,total)=>{
+    
+     const fs = require("fs");
+     const PDFDocument = require("pdfkit-table");
+   
+     // init document
+     let doc = new PDFDocument({ margin: 30, size: 'A4' });
+     // save document
+     doc.pipe(fs.createWriteStream("./document.pdf"));
+     ;(async function(){
+          // table
+          const table = {
+            title: "Title",
+            subtitle: "Subtitle",
+            headers: [
+              { label: "productsCount", property: 'productsCount', width: 60, renderer: null },
+              { label: "Customer", property: 'customer', width: 80, renderer: null }, 
+              { label: "OrderId", property: 'orderId', width: 110, renderer: null }, 
+              { label: "Total", property: 'total', width: 100, renderer: null }, 
+              { label: "Status", property: 'status', width: 50, renderer: null }, 
+              { label: "Date", property: 'date', width: 80, renderer: null }, 
+              { label: "Payment", property: 'paymentType', width: 43, 
+              renderer:null
+              },
+ 
+            ],
+            // complex data
+            datas: [
+              ...allData
+            
+              // {...},
+            ],
+            
+          };
+          // the magic
+          doc.table(table, {
+               prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
+               prepareRow: (row, indexColumn, indexRow, rectRow, rectCell) => {
+                    doc.font("Helvetica").fontSize(8);
+                    indexColumn === 0 && doc.addBackground(rectRow, 'white', 0.15);
+               },
+          });
+          doc.text("asdfasdf")
+          // done!
+          doc.end();
+        })();
+ }
+ 
+ //-----------------------------------download sales report-------------------------------
 const downloadSalesReportPdf = asyncHandler(async (req, res) => {
-     let allData = await orderCollection.aggregate([
-          //finding all the order informations
-          {$match:{}},
-          {
-               $project: {
-                    _id: 1,
-                    productsCount: 1,
-                    orderedAt: 1,
-                    total: 1,
-                    status: 1,
-                    payment: 1,
-                    customer: "$address.firstname",
-               },
-          },
-          {
-               $project: {
-                    _id: 0,
-                    OrderId: "$_id",
-                    productsCount: 1,
-                    Date: "$orderedAt",
-                    Total: "$total",
-                    Status: "$status",
-                    PaymentType: "$payment",
-                    Customer: "$address.firstname",
-               },
-          },
-     ]);
+     console.log(req.query)
 
+     if(req.query.saleType == 'Daily'){       //dailysales
 
+          let today = new Date().toDateString()
+          let allData = await orderCollection.aggregate([
+                //finding all the order informations
+                {
+                $match:{
+                    orderedAt:today
+                }
+                },
+                {$addFields:{
+                     orderId:{
+                          $toString:'$_id'
+                     }
+                }}
+                ,
+                {
+                     $project: {
+                          orderId: 1,
+                          productsCount: 1,
+                          orderedAt: 1,
+                          total: 1,
+                          status: 1,
+                          payment: 1,
+                          customer: "$address.firstname",
+                     },
+                },
+                {
+                     $project: {
+                          _id: 0,
+                          orderId:1,
+                          productsCount: 1,
+                          date: "$orderedAt",
+                          total: "$total",
+                          status: "$status",
+                          paymentType: "$payment",
+                       
+                          customer:1
+                     },
+                },
+           ]);
+      
+          let total = await orderCollection.aggregate([{$match:{orderedAt:today}},{
+               $group:{
+                    _id:null,
+                    total:{
+                         $sum:'$total'
+                    }
+               }
+          }])
+          console.log(total)
+      
+     
+      reports(allData,total).then(()=>{
 
-
+           res.download('document.pdf')
+      })
+     }
      
 });
 module.exports = {
