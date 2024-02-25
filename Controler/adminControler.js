@@ -10,9 +10,16 @@ const productCollection = require("../models/productModel");
 const categoryCollection = require("../models/categoryModel");
 const orderCollection = require("../models/orderModel");
 const offerCollection = require("../models/offerModel");
-const bannerCollection = require("../models/bannerModel")
+const bannerCollection = require("../models/bannerModel");
+const paymentCollection = require("../models/paymentModel");
+const userCollection = require("../models/userModel");
+const { convertArrayToCSV } = require("convert-array-to-csv");
 
 const adminHome = asyncHandler(async (req, res) => {
+     let orders = await orderCollection.find({}).limit(5).lean();
+     if (req.session.graphType == null) {
+          req.session.graphType = "total";
+     }
      try {
           var ADMIN;
           if (req.session.admin) {
@@ -20,31 +27,220 @@ const adminHome = asyncHandler(async (req, res) => {
                ADMIN = null;
           }
           // createAdmin('adarsh','adarshjithu10@gmail.com','123');
+          var totalSales;
+          var productsCount;
+          var totalRevenue;
+          var userCount;
+          var sales;
+          var label;
+          var type;
 
-          //totalSales
-          const total = await orderCollection.aggregate([
-               {
-                    $group: {
-                         _id: null,
-                         total: { $sum: "$total" },
-                         productCount: { $sum: "$productsCount" },
+          if (req.session.graphType == "total") {
+               //---------------------------TOTAL SALES--------------------------------
+               //totalSales
+               const total = await orderCollection.aggregate([
+                    {
+                         $group: {
+                              _id: null,
+                              total: { $sum: "$total" },
+                              productCount: { $sum: "$productsCount" },
+                         },
                     },
-               },
-          ]);
-          //total sales productcount total revenue
-          const totalSales = total[0].total;
-          const productsCount = total[0].productCount;
-          const totalRevenue = Math.floor((total[0].total * 30) / 100);
-          //total users
-          const users = await UserCollection.find({});
-          const userCount = users.length;
+               ]);
+               //total sales productcount total revenue
+               totalSales = total[0].total;
+               //total sales
+               productsCount = total[0].productCount;
+               //products count
+               totalRevenue = Math.floor((total[0].total * 30) / 100);
+               //total users
+               type = "Total";
+               //type
+               const users = await UserCollection.find({});
+               userCount = users.length;
+               sales = JSON.stringify([totalSales]);
+               label = JSON.stringify(["totalsales"]);
 
-          //total items sold
+               //total items sold
+          }
+          ///--------------------------------------DAILY SALES-------------------------------------
+          if (req.session.graphType == "daily") {
+               const today = new Date().toDateString();
+               let total = await orderCollection.aggregate([
+                    { $match: { orderedAt: today } },
+                    {
+                         $group: {
+                              _id: null,
+                              total: { $sum: "$total" },
+                              productCount: { $sum: "$productsCount" },
+                         },
+                    },
+               ]);
+               if (total.length == 0) {
+                    total = [{ total: 0, productCount: 0 }];
+               }
+               totalSales = total[0].total;
+               //total sales
+               productsCount = total[0].productCount;
+               totalRevenue = Math.floor((total[0].total * 30) / 100);
+               const users = await UserCollection.find({ signupAt: today });
+               userCount = users.length;
+               type = "Daily";
+               sales = JSON.stringify([totalSales]);
+               label = JSON.stringify(["Daily Sales"]);
+          }
 
-          const allOrders = await orderCollection.find({});
-          let dt = new Date().toDateString();
+          //----------------------------------CALENDER-------------------------------------------
+          if (req.session.graphType == "calender") {
+               const today = req.session.graphDate;
 
-          res.render("admin/home", { admin: req.session.admin.name, totalSales, productsCount, totalRevenue, userCount });
+               let total = await orderCollection.aggregate([
+                    { $match: { orderedAt: today } },
+                    {
+                         $group: {
+                              _id: null,
+                              total: { $sum: "$total" },
+                              productCount: { $sum: "$productsCount" },
+                         },
+                    },
+               ]);
+
+               if (total.length == 0) {
+                    total = [{ total: 0, productCount: 0 }];
+               }
+
+               console.log(total);
+               totalSales = total[0].total;
+               //total sales
+               productsCount = total[0].productCount;
+               totalRevenue = Math.floor((total[0].total * 30) / 100);
+               const users = await UserCollection.find({ signupAt: today });
+               userCount = users.length;
+               type = today;
+               sales = JSON.stringify([totalSales]);
+               label = JSON.stringify(["Daily Sales"]);
+          }
+
+          //----------------------------------------------------Monthly sales--------------------------
+
+          if (req.session.graphType == "monthly") {
+               //      console.log(req.query)
+               const monthlySales = await orderCollection.aggregate([
+                    {
+                         $group: {
+                              _id: { $month: { $toDate: "$orderedAt" } },
+                              totalSales: { $sum: "$total" },
+                         },
+                    },
+                    {
+                         $project: {
+                              _id: 0,
+                              month: {
+                                   $switch: {
+                                        branches: [
+                                             { case: { $eq: ["$_id", 1] }, then: "January" },
+                                             { case: { $eq: ["$_id", 2] }, then: "February" },
+                                             { case: { $eq: ["$_id", 3] }, then: "March" },
+                                             { case: { $eq: ["$_id", 4] }, then: "April" },
+                                             { case: { $eq: ["$_id", 5] }, then: "May" },
+                                             { case: { $eq: ["$_id", 6] }, then: "June" },
+                                             { case: { $eq: ["$_id", 7] }, then: "July" },
+                                             { case: { $eq: ["$_id", 8] }, then: "August" },
+                                             { case: { $eq: ["$_id", 9] }, then: "September" },
+                                             { case: { $eq: ["$_id", 10] }, then: "October" },
+                                             { case: { $eq: ["$_id", 11] }, then: "November" },
+                                             { case: { $eq: ["$_id", 12] }, then: "December" },
+                                        ],
+                                        default: "Invalid Month",
+                                   },
+                              },
+                              totalSales: 1,
+                         },
+                    },
+               ]);
+               let s = [];
+               let l = [];
+               monthlySales.forEach((e) => {
+                    s.push(e.totalSales);
+                    l.push(e.month);
+               });
+
+               console.log(s, l);
+               const total = await orderCollection.aggregate([
+                    {
+                         $group: {
+                              _id: null,
+                              total: { $sum: "$total" },
+                              productCount: { $sum: "$productsCount" },
+                         },
+                    },
+               ]);
+
+               // //total sales productcount total revenue
+               totalSales = total[0].total;
+               // //total sales
+               productsCount = total[0].productCount;
+               // //products count
+               totalRevenue = Math.floor((total[0].total * 30) / 100);
+               //total users
+               type = "Monthly";
+               //type
+               const users = await UserCollection.find({});
+               userCount = users.length;
+               sales = JSON.stringify([...s]);
+               label = JSON.stringify([...l]);
+          }
+
+          //----------------------------------------------------Weekly sales--------------------------
+
+          if (req.session.graphType == "weekly") {
+               let weeklySales = await orderCollection.aggregate([
+                    {
+                         $group: {
+                              _id: { $week: { $toDate: "$orderedAt" } },
+                              totalSales: { $sum: "$total" },
+                         },
+                    },
+                    {
+                         $sort: { _id: 1 },
+                    },
+               ]);
+
+               console.log(weeklySales);
+
+               let s = [];
+               let l = [];
+               weeklySales.forEach((e) => {
+                    s.push(e.totalSales);
+                    l.push(e._id);
+               });
+
+               const total = await orderCollection.aggregate([
+                    {
+                         $group: {
+                              _id: null,
+                              total: { $sum: "$total" },
+                              productCount: { $sum: "$productsCount" },
+                         },
+                    },
+               ]);
+
+               // //total sales productcount total revenue
+               totalSales = total[0].total;
+               // //total sales
+               productsCount = total[0].productCount;
+               // //products count
+               totalRevenue = Math.floor((total[0].total * 30) / 100);
+               //total users
+               type = "Weeklyh";
+               //type
+               const users = await UserCollection.find({});
+               userCount = users.length;
+               sales = JSON.stringify([...s]);
+               label = JSON.stringify([...l]);
+          }
+
+          res.render("admin/home", { admin: req.session.admin.name, totalSales, productsCount, totalRevenue, userCount, sales, label, type, orders });
      } catch (error) {
           console.log(error.message);
 
@@ -212,21 +408,18 @@ const adminAddProduct = asyncHandler(async (req, res) => {
 });
 // -------------------------------------admin addproduct post-------------------------------
 const adminAddProductPost = asyncHandler(async (req, res) => {
-     console.log(req.body)
+     console.log(req.body);
      //converting seasonal offer discount into Number from string
      req.body.offerDiscount = parseInt(req.body.offerDiscount);
-     req.body.discount = parseInt(req.body.discount)
+     req.body.discount = parseInt(req.body.discount);
      req.body.price = parseInt(req.body.price);
 
-       
-     console.log(req.body)
-     const seasonalDiscount = parseInt(req.body.price*req.body.offerDiscount/100)
-     const normalDiscount  =parseInt( req.body.discount)
+     console.log(req.body);
+     const seasonalDiscount = parseInt((req.body.price * req.body.offerDiscount) / 100);
+     const normalDiscount = parseInt(req.body.discount);
      const totalDiscount = seasonalDiscount + normalDiscount;
      const discountedPrice = req.body.price - totalDiscount;
-    
 
-     
      try {
           let filename;
           if (req.file.filename) {
@@ -234,7 +427,6 @@ const adminAddProductPost = asyncHandler(async (req, res) => {
           } else {
                filename = "";
           }
-    
 
           const productsObj = {
                name: req.body.name,
@@ -251,7 +443,7 @@ const adminAddProductPost = asyncHandler(async (req, res) => {
                totalDiscount: totalDiscount,
           };
 
-          console.log(productsObj)
+          console.log(productsObj);
 
           let products = await productCollection.create(productsObj);
           if (products) {
@@ -264,8 +456,6 @@ const adminAddProductPost = asyncHandler(async (req, res) => {
           error.statusCode = 500;
           next(err);
      }
-
-     
 });
 
 // ----------------------------------------admin delete product-------------------------------
@@ -610,56 +800,516 @@ const adminOfferControler = asyncHandler(async (req, res) => {
 //banner------------------------------------------------------------------
 
 const bannerControler = asyncHandler(async (req, res) => {
-    try{
-        const banner = await  bannerCollection.findOne({}).lean()
-        console.log(banner)
+     try {
+          const banner = await bannerCollection.findOne({}).lean();
+          console.log(banner);
 
-        res.render("admin/banner",{banner});
-    }
-    catch(error){
-        console.log(error.message)
-    }
+          res.render("admin/banner", { banner });
+     } catch (error) {
+          console.log(error.message);
+     }
 });
 const bannerControlerPost = asyncHandler(async (req, res) => {
-     
      var image = req.file.filename;
-     if(req.body.type==1){
-        await bannerCollection.updateOne({},{
-            $set:{
-                image1:req.file.filename
-            }
-        },{upsert:true})}
-     else{
-        await bannerCollection.updateOne({},{
-            $set:{
-                image2:req.file.filename
-            }
-        },{upsert:true})
+     if (req.body.type == 1) {
+          await bannerCollection.updateOne(
+               {},
+               {
+                    $set: {
+                         image1: req.file.filename,
+                    },
+               },
+               { upsert: true }
+          );
+     } else {
+          await bannerCollection.updateOne(
+               {},
+               {
+                    $set: {
+                         image2: req.file.filename,
+                    },
+               },
+               { upsert: true }
+          );
      }
-     res.redirect("/admin/banner")
-     
+     res.redirect("/admin/banner");
 });
 
 //delete banner-----------------------------------------------------------------------
 
-const deleteBanner = asyncHandler(async(req,res)=>{
-    var src = 'data:image/jpeg;base64,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'
-    if(req.query.id==1){
-        await bannerCollection.updateOne({},{
-            $set:{
-                image1:''
-            }
-        })
-    }
-    if(req.query.id==2){
-        await bannerCollection.updateOne({},{
-            $set:{
-                image2:''
-            }
-        })
-    }
-        res.redirect("/admin/banner")
-})
+const deleteBanner = asyncHandler(async (req, res) => {
+     var src =
+          "data:image/jpeg;base64,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";
+     if (req.query.id == 1) {
+          await bannerCollection.updateOne(
+               {},
+               {
+                    $set: {
+                         image1: "",
+                    },
+               }
+          );
+     }
+     if (req.query.id == 2) {
+          await bannerCollection.updateOne(
+               {},
+               {
+                    $set: {
+                         image2: "",
+                    },
+               }
+          );
+     }
+     res.redirect("/admin/banner");
+});
+
+//admin change graph--------------------------------------------------------------------
+
+const adminChangeGraph = asyncHandler(async (req, res) => {
+     req.session.graphDate = new Date(req.query.graphDate).toDateString();
+
+     req.session.graphType = req.query.type;
+     res.redirect("/admin");
+});
+
+//------------------------------------------------transaction----------------------------------
+
+const transaction = asyncHandler(async (req, res) => {
+     try {
+          const payments = await paymentCollection.aggregate([
+               { $match: {} },
+               {
+                    $lookup: {
+                         from: "orders",
+                         let: { orderDetails: { $toObjectId: "$orderDetails" } },
+                         pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$orderDetails"] } } }],
+                         as: "Payments",
+                    },
+               },
+               {
+                    $project: {
+                         order: 1,
+                         type: 1,
+                         payments: { $arrayElemAt: ["$Payments", 0] },
+                    },
+               },
+               {
+                    $project: {
+                         order: 1,
+                         type: 1,
+                         payments: 1,
+                         total: "$payments.total",
+                    },
+               },
+          ]);
+
+          console.log(payments);
+
+          res.render("admin/trasaction", { payments });
+     } catch (error) {
+          console.log(error.message);
+     }
+});
+//-------------------------------------------downloadsalesreport ----------------------------------
+
+const downloadSalesReportControler = asyncHandler(async (req, res) => {
+     let startDate = req.body.startDate;
+     let endDate = req.body.endDate;
+     let start = new Date(startDate);
+     let end = new Date(endDate);
+     if (start > end) {
+          res.redirect("/admin");
+     }
+
+     let users = await userCollection.aggregate([
+          ////finding all the user details
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$signupAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: start,
+                         $lte: end,
+                    },
+               },
+          },
+     ]);
+     let user = users.length;
+
+     let order = await orderCollection.aggregate([
+          ////finding all the total details
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: start,
+                         $lte: end,
+                    },
+               },
+          },
+          {
+               $group: {
+                    _id: null,
+                    totalSales: {
+                         $sum: "$total",
+                    },
+                    totalCount: {
+                         $sum: 1,
+                    },
+                    totalProducts: {
+                         $sum: "$productsCount",
+                    },
+               },
+          },
+     ]);
+     let allData = await orderCollection.aggregate([
+          //finding all the order informations
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: start,
+                         $lte: end,
+                    },
+               },
+          },
+          {
+               $project: {
+                    _id: 1,
+                    productsCount: 1,
+                    orderedAt: 1,
+                    total: 1,
+                    status: 1,
+                    payment: 1,
+                    customer: "$address.firstname",
+               },
+          },
+          {
+               $project: {
+                    _id: 0,
+                    OrderId: "$_id",
+                    productsCount: 1,
+                    Date: "$orderedAt",
+                    Total: "$total",
+                    Status: "$status",
+                    PaymentType: "$payment",
+                    Customer: "$address.firstname",
+               },
+          },
+     ]);
+
+     let totalSales = order[0].totalSales;
+     let totalSalesCount = order[0].totalCount;
+     let totalProducts = order[0].totalProducts;
+     const fs = require("fs");
+     var information = allData;
+     const { Parser } = require("json2csv");
+     const json2csv = new Parser();
+     const csv = json2csv.parse(information);
+     fs.writeFile("csv.csv", csv, (err) => {
+          console.log(err);
+     });
+     res.attachment("csv.csv");
+     res.send(csv);
+     console.log(csv);
+});
+
+const salesReport = asyncHandler(async (req, res) => {
+     let saleType = "Daily";
+
+     const type = `DAILY SALES REPORT (${new Date().toDateString()})`; //type
+     const date = new Date().toDateString();
+
+     let order = await orderCollection.aggregate([
+          { $match: { orderedAt: date } }, //total sales
+     ]);
+     let total = await orderCollection.aggregate([
+          { $match: { orderedAt: date } }, //total sales
+          {
+               $group: {
+                    _id: null,
+                    total: { $sum: "$total" },
+                    productCount: { $sum: "$productsCount" },
+               },
+          },
+     ]);
+     if (total.length == 0) {
+          total = [{ total: 0, productCount: 0 }];
+     }
+     totalSales = total[0].total; //total sales
+     //type of sales
+
+     res.render("admin/salesReport", { order, totalSales, type, date, saleType });
+});
+//----------------------------------------Daily Sales Report -------------------------------
+
+const dailySalesReport = asyncHandler(async (req, res) => {
+     let saleType = "Daily";
+     const type = `DAILY SALES REPORT (${new Date().toDateString()})`; //type
+     const date = new Date().toDateString();
+
+     let order = await orderCollection.aggregate([
+          { $match: { orderedAt: date } }, //total sales
+     ]);
+     let total = await orderCollection.aggregate([
+          { $match: { orderedAt: date } }, //total sales
+          {
+               $group: {
+                    _id: null,
+                    total: { $sum: "$total" },
+                    productCount: { $sum: "$productsCount" },
+               },
+          },
+     ]);
+     if (total.length == 0) {
+          total = [{ total: 0, productCount: 0 }];
+     }
+     totalSales = total[0].total; //total sales
+     //type of sales
+
+     res.render("admin/salesReport", { order, totalSales, type, date, saleType });
+});
+
+//--------------------weekly sales report---------------------------------------------
+
+const weeklySalesReport = asyncHandler(async (req, res) => {
+     var startOfWeek = new Date();
+     var startOfWeek = new Date(); //startdate of current week
+     startOfWeek.setHours(0, 0, 0, 0);
+     startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+     let startDate = new Date().toDateString();
+     let saleType = "Weekly";
+     var endOfWeek = new Date(); //end of the week
+     endOfWeek.setHours(23, 59, 59, 999);
+     endOfWeek.setDate(endOfWeek.getDate() + (6 - endOfWeek.getDay()));
+     let end = endOfWeek.toDateString();
+     const type = `WEEKLY SALES REPORT (${startDate} to ${end})`;
+
+     let order = await orderCollection.aggregate([
+          //finding all the order informations
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: startOfWeek,
+                         $lte: endOfWeek,
+                    },
+               },
+          },
+     ]);
+     let total = await orderCollection.aggregate([
+          //finding total
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: startOfWeek,
+                         $lte: endOfWeek,
+                    },
+               },
+          },
+          {
+               $group: {
+                    _id: null,
+                    total: {
+                         $sum: "$total",
+                    },
+               },
+          },
+     ]);
+
+     let totalSales = total[0].total; //finding total sales
+     res.render("admin/salesReport", { order, totalSales, type, saleType });
+});
+
+//--------------------------------------Monthly Sales --------------------------------------
+
+const monthlySales = asyncHandler(async (req, res) => {
+     var startOfMonth = new Date();
+     var startOfMonth = new Date(); //month start Date
+     startOfMonth.setHours(0, 0, 0, 0);
+     startOfMonth.setDate(1);
+     let saleType = "Monthly";
+     var endOfMonth = new Date(); //Month end date
+     endOfMonth.setHours(23, 59, 59, 999);
+     endOfMonth.setMonth(endOfMonth.getMonth() + 1, 0);
+
+     let startDate = new Date().toDateString(); //now date
+
+     let end = endOfMonth.toDateString();
+     const type = `WEEKLY SALES REPORT (${startDate} to ${end})`; //type of sales
+     let order = await orderCollection.aggregate([
+          //finding all the order informations
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: startOfMonth,
+                         $lte: endOfMonth,
+                    },
+               },
+          },
+     ]);
+     let total = await orderCollection.aggregate([
+          //finding total
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: startOfMonth,
+                         $lte: endOfMonth,
+                    },
+               },
+          },
+          {
+               $group: {
+                    _id: null,
+                    total: {
+                         $sum: "$total",
+                    },
+               },
+          },
+     ]);
+
+     let totalSales = total[0].total; //finding total sales
+
+     res.render("admin/salesReport", { order, totalSales, type, saleType });
+});
+
+//-------------customSales report ----------------------------------------------------------
+
+const customSalesReport = asyncHandler(async (req, res) => {
+     let startDate = new Date(req.body.startDate); //start date
+     let endDate = new Date(req.body.endDate);
+     let saleType = "Custom";
+     let type = `CUSTOM SALES REPORT (${new Date(startDate).toDateString()}to ${new Date(endDate).toDateString()})`;
+     let order = await orderCollection.aggregate([
+          //finding all the order informations
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: startDate,
+                         $lte: endDate,
+                    },
+               },
+          },
+     ]);
+     let total = await orderCollection.aggregate([
+          //finding total
+          {
+               $addFields: {
+                    createdAt: {
+                         $toDate: "$orderedAt",
+                    },
+               },
+          },
+          {
+               $match: {
+                    createdAt: {
+                         $gte: startDate,
+                         $lte: endDate,
+                    },
+               },
+          },
+          {
+               $group: {
+                    _id: null,
+                    total: {
+                         $sum: "$total",
+                    },
+               },
+          },
+     ]);
+
+     let totalSales = total[0].total; //finding total sales      //enddate
+
+     res.render("admin/salesReport", { totalSales, type, order, saleType }); //page rendering
+});
+
+//download sales report pf ------------------------------------------------------------------
+
+const downloadSalesReportPdf = asyncHandler(async (req, res) => {
+     let allData = await orderCollection.aggregate([
+          //finding all the order informations
+          {$match:{}},
+          {
+               $project: {
+                    _id: 1,
+                    productsCount: 1,
+                    orderedAt: 1,
+                    total: 1,
+                    status: 1,
+                    payment: 1,
+                    customer: "$address.firstname",
+               },
+          },
+          {
+               $project: {
+                    _id: 0,
+                    OrderId: "$_id",
+                    productsCount: 1,
+                    Date: "$orderedAt",
+                    Total: "$total",
+                    Status: "$status",
+                    PaymentType: "$payment",
+                    Customer: "$address.firstname",
+               },
+          },
+     ]);
+
+
+
+
+     
+});
 module.exports = {
      adminHome,
      adminLogin,
@@ -687,5 +1337,14 @@ module.exports = {
      adminOfferControler,
      bannerControler,
      bannerControlerPost,
-     deleteBanner
+     deleteBanner,
+     adminChangeGraph,
+     transaction,
+     downloadSalesReportControler,
+     salesReport,
+     dailySalesReport,
+     weeklySalesReport,
+     monthlySales,
+     customSalesReport,
+     downloadSalesReportPdf,
 };

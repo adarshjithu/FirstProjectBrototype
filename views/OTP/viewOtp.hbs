@@ -83,10 +83,17 @@ document.getElementById("timer").innerHTML = '0'
       }
 //resend otp--------------------------------------
 function resendOtp(){
+     let timer = document.getElementById('timer').innerHTML;
+     if(timer<=0){
+        
 fetch(`http://localhost:3000/user/otp/resend?position=${position}`).then((data)=>{
     return data.json()
 }).then((result)=>{
     location.reload()
 })
+     }
+     else{
+location.reload()
+     }
 }
 </script>

@@ -72,10 +72,13 @@ const homeControler = asyncHandler(async (req, res, next) => {
      try {
           const banner = await bannerCollection.findOne({}).lean(); 
           const category = await categoryCollection.find({}).lean();
-          products = await productCollection.find({}).lean().limit(8);
+          products = await productCollection.find({category:'Mobile'}).lean().limit(5);
+          let laptop= await productCollection.find({category:'Laptop'}).lean().limit(5);
           let cartCount = await cartCollection.findOne({ user: req.session.user._id });
+          let newArrival = await productCollection.findOne({}).lean();
+          console.log(newArrival)
           var count;
-          if (cartCount) {
+          if (cartCount) { 
                count = cartCount.products.length;
           } else {
                count = null;
@@ -88,7 +91,7 @@ const homeControler = asyncHandler(async (req, res, next) => {
                USER = "";
           }
 
-          res.render("user/home", { home: true, user: USER, category, products, count: count,banner });
+          res.render("user/home", { home: true, user: USER, category, products, count: count,banner,laptop,newArrival });
      } catch (error) {
           console.log(error.message);
           res.status(500);
@@ -245,7 +248,7 @@ const passwordResetSuccessPost = asyncHandler(async (req, res) => {
 //userprofile------------------------------------------------------------------------------------------
 
 const userProfile = async (req, res) => {
-     res.render("user/profile", { home: true });
+     res.redirect("/profile/account-details",);
 };
 
 ///logout controler--------------------------------------------------------------------------------
@@ -428,9 +431,7 @@ const changed = asyncHandler((req, res) => {
      }
 });
 
-const blog = (req, res) => {
-     res.render("user/blog", { home: true });
-};
+
 /////////////////////////---------------------------------------------------------------------
 
 const filterProduct = asyncHandler(async (req, res) => {
@@ -550,6 +551,6 @@ module.exports = {
      productDetails,
      changeProductCategory,
      changed,
-     blog,
+    
      filterProduct,
 };

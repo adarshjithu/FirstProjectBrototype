@@ -189,8 +189,14 @@ const profileIconControler = asyncHandler(async(req,res)=>{
 
 // wallet----------------------------------------------------------------------------
 const walletControler = asyncHandler(async(req,res)=>{
-    const wallet =  await walletCollection.findOne({user:req.session.user._id}).sort({"_id":1}).lean();
-    let trans = wallet.transactions.reverse();
+    
+     const wallet =  await walletCollection.findOne({user:req.session.user._id}).sort({"_id":1}).lean();
+     let trans= []
+    if(wallet){
+
+          trans = wallet.transactions.reverse();
+    }
+ 
     var amount;
     if(wallet){
 

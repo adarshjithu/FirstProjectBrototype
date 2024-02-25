@@ -17,14 +17,23 @@ const signupControler = asyncHandler(async(req,res)=>{
     let otpVariable = req.session.otpVariable;
     
     if(otpVariable){
-       
-      //finding position of last user;
-      let length = otpVariable.length;
-      //generating otp
-        generateOTP(req.body.email).then((OTP)=>{
-            req.session.otpVariable.push({date:date,user:req.body.user,otp:OTP});
-            res.redirect(`/user/otp/viewOtp/${length}`)
+        let index = otpVariable.findIndex((e)=>{
+                return e.user.email == req.body.email
         })
+        if(index>=0){
+            res.redirect(`/user/otp/viewOtp/${index}`)
+        }
+        else{
+
+            //finding position of last user;
+            let length = otpVariable.length;
+            //generating otp
+              generateOTP(req.body.email).then((OTP)=>{
+                  req.session.otpVariable.push({date:date,user:userData,otp:OTP});
+                  res.redirect(`/user/otp/viewOtp/${length}`)
+              })
+        }
+       
       
     }
     else{

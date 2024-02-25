@@ -408,9 +408,34 @@ const userOrderReturnTypepost=asyncHandler(async(req,res)=>{
 //invoice----------------------------------------------------------------------------
 
 const orderInvoiceControler = asyncHandler(async(req,res)=>{
-
+const order = await orderCollection.findOne({_id:req.query.id})
 var easyinvoice = require('easyinvoice');
+let pro = order.products
+let obj;
+let currentDate = new Date();
 
+// Get the current date plus 10 days
+let futureDate = new Date();
+futureDate.setDate(currentDate.getDate() + 10);
+
+// Format the dates as strings
+let formattedCurrentDate = currentDate.toISOString().split('T')[0];
+let formattedFutureDate = futureDate.toISOString().split('T')[0];
+
+let products = []
+pro.forEach((e)=>{
+   obj =    {
+     quantity:e.count,
+     description:e.product.name,
+     taxRate:10,
+     price:e.product.price
+
+   
+  }
+  products.push(obj)
+
+})
+console.log(products)
 
 var data = {
      apiKey: "free", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
@@ -418,61 +443,42 @@ var data = {
     
      // Your own data
      sender: {
-         company: "Sample Corp",
-         address: "Sample Street 123",
-         zip: "1234 AB",
-         city: "Sampletown",
-         country: "Samplecountry"
+         company: "DIGITYX",
+         address: "Sm Street calicut",
+         zip: "673601",
+         city: "Calicut",
+         country: "India"
          // custom1: "custom value 1",
          // custom2: "custom value 2",
          // custom3: "custom value 3"
      },
      // Your recipient
      client: {
-         company: "Client Corp",
-         address: "Clientstreet 456",
-         zip: "4567 CD",
-         city: "Clientcity",
-         country: "Clientcountry"
+         company: `${order.address.firstname}`,
+         address: order.address.address,
+         zip: order.address.zipcode,
+         city: order.address.state,
+         country: order.address.country
          // custom1: "custom value 1",
          // custom2: "custom value 2",
          // custom3: "custom value 3"
      },
      information: {
          // Invoice number
-         number: "2021.0001",
+         number: req.query.id,
          // Invoice data
-         date: "12-12-2021",
+         date: formattedCurrentDate,
          // Invoice due date
-         dueDate: "31-12-2021"
+         dueDate: formattedFutureDate
      },
      // The products you would like to see on your invoice
      // Total values are being calculated automatically
-     products: [
-         {
-             quantity: 2,
-             description: "Product 1",
-             taxRate: 6,
-             price: 33.87
-         },
-         {
-             quantity: 4.1,
-             description: "Product 2",
-             taxRate: 6,
-             price: 12.34
-         },
-         {
-             quantity: 4.5678,
-             description: "Product 3",
-             taxRate: 21,
-             price: 6324.453456
-         }
-     ],
+     products:products,
      // The message you would like to display on the bottom of your invoice
      bottomNotice: "Kindly pay your invoice within 15 days.",
      // Settings to customize your invoice
-     settings: {
-         currency: "USD", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
+     settings: { 
+         currency: "INR", // See documentation 'Locales and Currency' for more info. Leave empty for no currency.
          // locale: "nl-NL", // Defaults to en-US, used for number formatting (See documentation 'Locales and Currency')        
          // marginTop: 25, // Defaults to '25'
          // marginRight: 25, // Defaults to '25'

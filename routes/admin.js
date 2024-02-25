@@ -1,5 +1,5 @@
 const express = require('express');
-const {adminHome, adminLogin, adminLoginPost, adminLogout, adminCustomers, adminViewProducts, adminBlockUser, adminAddProduct, adminAddProductPost, adminDeleteProduct, adminViewProductCategoryVise, adminEditProduct, adminEditProductPost, changeImage, adminAddCategory, adminAddCategoryPost, adminViewCategory, deleteCategory, editCategory, editCategoryPost, editCategoryImage, categoryChartControler, ChangeSalesChart, adminOfferControler, bannerControler, bannerControlerPost, deleteBanner} = require('../Controler/adminControler');
+const {adminHome, adminLogin, adminLoginPost, adminLogout, adminCustomers, adminViewProducts, adminBlockUser, adminAddProduct, adminAddProductPost, adminDeleteProduct, adminViewProductCategoryVise, adminEditProduct, adminEditProductPost, changeImage, adminAddCategory, adminAddCategoryPost, adminViewCategory, deleteCategory, editCategory, editCategoryPost, editCategoryImage, categoryChartControler, ChangeSalesChart, adminOfferControler, bannerControler, bannerControlerPost, deleteBanner, adminChangeGraph, transaction, downloadSalesReportControler, salesReport, dailySalesReport, weeklySalesReport, monthlySales, customSalesReport, downloadSalesReportPdf} = require('../Controler/adminControler');
 const { verifyAdmin, adminValidationLoginRules, adminLoginValidationRes } = require('../middlewares/middleware');
 
 const {upload} =  require("../config")
@@ -30,14 +30,22 @@ app.post("/edit-category-image",upload.single('image'),editCategoryImage);
 app.get("/check",(req,res)=>{
     res.render("admin/index") 
 })
+app.get("/transaction",transaction)
 
 app.get('/category-chart',categoryChartControler);
 app.get("/changeSalesChart",ChangeSalesChart);
 app.get("/offers",adminOfferControler);
 app.get("/banner",bannerControler)
 app.post("/banner",upload.single('image'),bannerControlerPost);
-app.get("/bannerDelete",deleteBanner)
-
+app.get("/bannerDelete",deleteBanner);
+app.get("/changeGraph",adminChangeGraph);
+app.post("/download-salesreport",downloadSalesReportControler)
+app.get("/salesReport",salesReport);
+app.get("/dailySales",dailySalesReport);
+app.get("/weeklySales",weeklySalesReport);
+app.get("/monthlySales",monthlySales);
+app.post("/customSalesReport",customSalesReport);
+app.get("/downloadSalesReportPdf",downloadSalesReportPdf)
 
   
 

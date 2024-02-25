@@ -16,6 +16,13 @@ const razorpay = new Razorpay({
 const addToCart = asyncHandler(async (req, res) => {
 
      try {
+          let product = await productCollection.findOne({_id:req.query.proId});//checking product quantity
+          if(product.quantity<=0){
+               
+          }
+          else{
+
+
           const userId = req.session.user._id;
 
           const proId = req.query.proId;
@@ -53,7 +60,7 @@ const addToCart = asyncHandler(async (req, res) => {
      
           res.json({ count: cartCount.products.length
                //  ,totalProducts:proCount
-               });
+               });}
      } catch (error) {
           console.log(error.message);
        
@@ -711,10 +718,10 @@ const checkoutChangeAddress = asyncHandler(async (req, res) => {
 const razorPayControler = asyncHandler(async (req, res) => {
      try{
 
-     
+     console.log(process.env.RAZORPAY_KEY_SECRET)
      //crating signature using crypto library
      var crypto = require("crypto");
-     var razorpaySecret ='B73pT7m7mlLQTj1Zzlx6Gvx5'
+     var razorpaySecret =`${process.env.RAZORPAY_KEY_SECRET}`
      var hmac = crypto.createHmac("sha256", razorpaySecret);
      hmac.update(req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id);
      hmac = hmac.digest("hex");
