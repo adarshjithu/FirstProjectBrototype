@@ -72,11 +72,38 @@ const homeControler = asyncHandler(async (req, res, next) => {
      try {
           const banner = await bannerCollection.findOne({}).lean(); 
           const category = await categoryCollection.find({}).lean();
-          products = await productCollection.find({category:'Mobile'}).lean().limit(5);
-          let laptop= await productCollection.find({category:'Laptop'}).lean().limit(5);
+          products = await productCollection.aggregate([{$match:{
+               category:'Mobile'
+          }},{$addFields:{date:'$addedAt'}},{$sort:{date:-1}},{$limit:5}])
+          let laptop= await productCollection.aggregate([{$match:{category:'Laptop'}},{
+               $addFields:{
+                    date:'$addedAt'
+               }
+          },{
+
+               $sort:{
+                    date:-1
+               }
+          },{$limit:5
+          }])
           let cartCount = await cartCollection.findOne({ user: req.session.user._id });
-          let newArrival = await productCollection.findOne({}).lean();
-          console.log(newArrival)
+          let newArr = await productCollection.aggregate([{$match:{
+               category:'Laptop'
+          }},{$addFields:{
+               date:{
+                    $toDate:'$addedAt'
+               }
+          }},{
+
+          $sort:{
+               date:-1
+          }
+          },{
+               $limit:1
+          }])
+          let newArrival = newArr[0] //setting newArrival product
+     
+          console.log(newArr)
           var count;
           if (cartCount) { 
                count = cartCount.products.length;
@@ -91,7 +118,7 @@ const homeControler = asyncHandler(async (req, res, next) => {
                USER = "";
           }
 
-          res.render("user/home", { home: true, user: USER, category, products, count: count,banner,laptop,newArrival });
+          res.render("user/home", { home: true, user: USER, category, products, count: count,banner,laptop ,newArrival});
      } catch (error) {
           console.log(error.message);
           res.status(500);
